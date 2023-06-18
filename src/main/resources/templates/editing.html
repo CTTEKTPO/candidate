@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EditCandidate</title>
+    <link rel="stylesheet" href="css/job_seekers.css">
+    <link rel="stylesheet" href="css/style-modal.css">
+    <link rel="stylesheet" href="css/delete.css">
+    <link rel="stylesheet" href="css/editing.css">
+</head>
+<body>
+    <header>
+        <div class="header-flex">
+            <!-- <a href="">Файл</a> -->
+            <div id="openModal" class="modal">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <a href="#win2" class="modal-title"><h3 style="width: 140px;">О программе</h3></a>
+                      <a href="#close" title="Close" class="close">×</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+               
+              <!-- HTML кнопки -->
+               
+            <a href="#openModal" class="reference">Справка</a>
+
+            <a href="#x" class="overlay" id="win2"></a>
+            <div class="popup">
+                <div class="flex-popup">
+                    <img src="img/person.svg" width="130px" class="img-popup">
+                    <div class="person-desc">
+                        <p>Учет кадров V.1.0 </p>
+                        <p>@Megasoft</p>
+                        <p>Петров А.В. все права защищены</p>
+                        <p>Email для связи c разработчиком:</p>
+                        <p>mail@gmail.com</p>
+                    </div>
+                    
+                </div>
+    
+                    
+                <a class="close-Popup" title="Закрыть" href="#close"></a>
+            </div>
+        </div>
+    </header>
+
+        <div class="group-img">
+            <!-- <a href="addendum.html"><img src="img/newdoc.svg" class="img"></a> -->
+            <!-- <a href="editing.html"></a> -->
+            <img src="img/edit.svg" class="img">
+            <!-- <a href="delete.html"><img src="img/delete.svg" class="img"></a> -->
+            <!-- <a href="median.html"><img src="img/chart.svg " class="img"></a> -->
+        </div>
+        <div>
+            <button class="group-btn"><a href="/">Соискатели</a></button>
+            <!-- <button class="group-btn"><a href="job_openings.html">Вакансии</a></button> -->
+        </div>
+
+        <form th:action="@{/edit-personal-card/{id}(id=${personalCard.id})}" method="post" class="form-add" enctype="multipart/form-data" >
+            <div class="flex-form">
+<!--                <div class="surname">-->
+<!--                    <label for="surname" class="surname_per"><b>Фамилия</b></label>-->
+<!--                    <div>-->
+<!--                        <input type="text" placeholder="Измените фамилию" name="surname" required >-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="name">-->
+<!--                    <label for="name" class="name_per"><b>Имя</b></label>-->
+<!--                    <div>-->
+<!--                        <input type="text" placeholder="Измените имя" name="name" required > -->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="patronymic">-->
+<!--                    <label for="patronymic" class="patronymic"><b>Отчество</b></label>-->
+<!--                    <div>-->
+<!--                        <input type="text" placeholder="Измените отчество" name="patronymic"  >-->
+<!--                    </div>-->
+<!--                </div>-->
+
+                <div class="fullName">
+                    <label for="fullName" class="fullName"><b>ФИО</b></label>
+                    <div>
+                        <input type="text" id="fullName" placeholder="ФИО" name="fullName" th:field="*{personalCard.fullName}">
+                    </div>
+                </div>
+                <div class="date">
+                    <label for="date">Дата рождения</label>      
+                    <div>
+                        <input type="date" name="date" th:field="*{personalCard.dateOfBirth}">
+                    </div>                           
+                </div>
+                <div class="age">
+                    <label for="age" class="age"><b>Возраст</b></label>
+                    <div>
+                        <input type="text"  name="age" th:field="*{personalCard.age}">
+                    </div>
+                </div>
+                <div class="gender">
+                    <label for="gender" class="gender"><b>Пол</b></label>
+                    <div>
+                        <!-- <input type="text" placeholder="Введите пол" name="gender" required >  -->
+                        <input type="text" name="gender" th:field="*{personalCard.sex.gender}" >
+                    </div>
+                </div>
+                <div class="city">
+                    <label for="city" class="city"><b>Город</b></label>
+                    <div>
+                        <input type="text" placeholder="Измените город" name="city" th:field="*{personalCard.city.name}">
+                    </div>
+                    
+                </div>
+                <!-- <div class="interview">
+                    <label for="interview" class="interview"><b>Был\не был на собеседовании</b></label>
+                    <div>
+                        <input type="text" placeholder="Измените был\не был на собеседовании" name="interview" required > 
+                    </div>
+                </div> -->
+                 <div class="phone">
+                    <label for="phone" class="phone"><b>Телефон</b></label>
+                    <div>
+                        <input type="text" placeholder="Измените телефон" name="phone" th:field="*{personalCard.phone}">
+                    </div>
+                     
+                </div>
+                <div class="status">
+                    <label for="status" class="status"><b>Статус</b></label>
+                    <div>
+                        <input type="text" placeholder="Измените статус" name="status" th:field="*{personalCard.status.field}">
+                    </div>
+                     
+                </div>
+                <div class="salary">
+                    <label for="salary" class="salary"><b>Желаемая заработная плата</b></label>
+                    <div>
+                        <input type="text" placeholder="Измените желаемую зарплату" name="salary" th:field="*{personalCard.salary}" >
+                    </div>
+                    
+                </div>
+                <div class="post">
+                    <label for="post" class="post"><b>Желаемая должность</b></label>
+                    <div>
+                        <input type="text" placeholder="Измените желаемую должность" name="post" th:field="*{personalCard.jobTitle.title}" >
+                    </div>
+                   
+                </div>
+                <div class="experience">
+                    <label for="experience" class="experience"><b>Опыт работы</b></label>
+                    <div>
+                        <input type="text" placeholder="Измените опыт работы" name="experience" th:field="*{personalCard.experience}" >
+                    </div>
+                </div>
+                <div class="Education">
+                    <label for="Education" class="Education"><b>Образование</b></label>
+                    <div>
+                        <input type="text" placeholder="Измените образование" name="Education" th:field="*{personalCard.education}" >
+                    </div>
+                    
+                </div>
+                <div class="skills">
+                    <label for="skills" class="skills"><b>Ключевые навыки</b></label>
+                    <div>
+                        <input type="text" placeholder="Измените ключевые навыки" name="skills" th:field="*{personalCard.skills}" >
+                    </div>
+                    
+                </div>
+                <div class="comments">
+                    <label for="comments" class="comments" ><b>Комментарии</b></label>
+                    <div>
+                        <!-- <textarea  placeholder="Измените комментарии" name="comments" required >  -->
+                            <p style="margin: 0;"><textarea rows="10" cols="45" name="text" th:field="*{personalCard.comments}" ></textarea></p>
+                    </div>
+                </div>
+<!--                <div class="image">-->
+<!--                    <label for="image" class="image"><b>Фото</b></label>-->
+<!--                    <div>-->
+<!--                         <input type="image" placeholder="тут должно быть довавление фото!" name="image" required >-->
+<!--                    </div>-->
+<!--                </div> -->
+            </div>
+
+
+        <button type="submit" class="add" style="margin-left: 30px;">Изменить</button>
+        </form>
+
+
+</body>
+</html>
