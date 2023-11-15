@@ -1,7 +1,6 @@
 package com.example.candidate.controller;
 
-import com.example.candidate.service.CityService;
-import com.example.candidate.service.PersonalCardService;
+import com.example.candidate.service.*;
 import org.springframework.ui.Model;
 import com.example.candidate.model.*;
 import com.example.candidate.repository.*;
@@ -45,13 +44,20 @@ public class MainController {
 
     private final CityService cityService;
     private final PersonalCardService personalCardService;
+    private final SexService sexService;
+    private final JobTitleService jobTitleService;
+    private final StatusService statusService;
+
 
     public MainController(
             PersonalCardRepository personalCardRepository,
             SexRepository sexRepository,
             CityRepository cityRepository,
             JobTitleRepository jobTitleRepository,
-            StatusRepository statusRepository, CityService cityService, PersonalCardService personalCardService) {
+            StatusRepository statusRepository,
+            CityService cityService,
+            PersonalCardService personalCardService,
+            SexService sexService, JobTitleService jobTitleService, StatusService statusService) {
         this.personalCardRepository = personalCardRepository;
         this.sexRepository = sexRepository;
         this.cityRepository = cityRepository;
@@ -59,35 +65,50 @@ public class MainController {
         this.statusRepository = statusRepository;
         this.cityService = cityService;
         this.personalCardService = personalCardService;
+        this.sexService = sexService;
+        this.jobTitleService = jobTitleService;
+        this.statusService = statusService;
     }
 
         @GetMapping("/")
         public String getAllPersonalCards(Model model) {
-            List<PersonalCard> personalCards = personalCardRepository.findAll();
+            List<PersonalCard> personalCards = personalCardService.getAll();
             model.addAttribute("personalCards", personalCards);
             return "job_seekers";
         }
 
         @GetMapping("/add-personal-card")
         public String showAddPersonalCardForm(Model model) {
-            List<Sex> sexes = sexRepository.findAll();
-            List<City> cities = cityRepository.findAll();
-            List<JobTitle> jobTitles = jobTitleRepository.findAll();
-            List<Status> statuses = statusRepository.findAll();
+//            List<Sex> sexes = sexRepository.findAll();
+//            List<City> cities = cityRepository.findAll();
+//            List<JobTitle> jobTitles = jobTitleRepository.findAll();
+//            List<Status> statuses = statusRepository.findAll();
 
             model.addAttribute("personalCard", new PersonalCard());
-            model.addAttribute("sexes",sexes);
-            model.addAttribute("cities", cities);
-            model.addAttribute("jobTitles", jobTitles);
-            model.addAttribute("statuses", statuses);
+            model.addAttribute("sex",new Sex());
+            model.addAttribute("city", new City());
+            model.addAttribute("jobTitle", new JobTitle());
+            model.addAttribute("status", new Status());
+//            model.addAttribute("sexes",sexes);
+//            model.addAttribute("cities", cities);
+//            model.addAttribute("jobTitles", jobTitles);
+//            model.addAttribute("statuses", statuses);
 
             return "addendum";
         }
 
         @PostMapping("/add-personal-card")
-        public String addPersonalCard(@ModelAttribute("personalCard") PersonalCard personalCard)
-//                                      @ModelAttribute("sexes")Sex sex,
-//                                      @ModelAttribute("cities")City city,
+        public String addPersonalCard(
+                PersonalCard personalCard,
+                Sex sex,
+                City city,
+                JobTitle jobTitle,
+                Status status
+                )
+
+//                @ModelAttribute("personalCard") PersonalCard personalCard),
+//                                      @ModelAttribute("sex")Sex sex,
+//                                      @ModelAttribute("city")City city,
 //                                      @ModelAttribute("citiesAdd") City addCity,
 //                                      @ModelAttribute("jobTitles")JobTitle jobTitle,
 //                                      @ModelAttribute("statuses")Status status)
@@ -97,16 +118,24 @@ public class MainController {
 //                    existingPersonalCard.setImagesBytes(imageFile.getBytes());
 //                }
 
-            personalCard.setSex(sexRepository.findById(personalCard.getSex().getId()).orElse(null));
-            personalCard.setCity(cityRepository.findById(personalCard.getCity().getId()).orElse(null));
-            personalCard.setJobTitle(jobTitleRepository.findById(personalCard.getJobTitle().getId()).orElse(null));
-            personalCard.setStatus(statusRepository.findById(personalCard.getStatus().getId()).orElse(null));
-            personalCard.setDateOfBirth(personalCard.getDateOfBirth());
-
+//            personalCard.setSex(sexRepository.findById(personalCard.getSex().getId()).orElse(null));
+//            personalCard.setCity(cityRepository.findById(personalCard.getCity().getId()).orElse(null));
+//            personalCard.setJobTitle(jobTitleRepository.findById(personalCard.getJobTitle().getId()).orElse(null));
+//            personalCard.setStatus(statusRepository.findById(personalCard.getStatus().getId()).orElse(null));
+//            personalCard.setDateOfBirth(personalCard.getDateOfBirth());
 
             personalCardService.saveOrUpdate(personalCard);
+            sexService.saveOrUpdate(sex);
+            cityService.saveOrUpdate(city);
+            jobTitleService.saveOrUpdate(jobTitle);
+            statusService.saveOrUpdate(status);
+
             return "redirect:/";
         }
+
+        //ДОПИСАТЬ РЕДИРЕКТ НА ПОСТ ЗАПРОС, КОТОРЫЙ ВНАЧАЛЕ ДОБАВЛЯЕТ ИЛИ ПРОВЕРЯЕТ ДАННЫЕ В ДРУГИХ ТАБЛИЦАХ
+        // ПОСЛЕ НАЖАТИЯ НА КНОПКУ ДОБАВИТЬ НА СТРАНИЦЕ ADDENDUM
+        //ПОТОМ ВЫЗЫВАЕТСЯ @PostMapping("/add-personal-card") ДЛЯ ДОБАВЛЕНИЯ В ОСНОВНУЮ ТАБЛ.
 
         @GetMapping("/edit-personal-card/{id}")
         public String showEditPersonalCardForm(@PathVariable("id") Long id, Model model) {

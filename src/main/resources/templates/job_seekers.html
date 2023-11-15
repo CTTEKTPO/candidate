@@ -48,9 +48,13 @@
         </div>
     </header>
     <main>
+
         <div class="group-img">
             <a href="/add-personal-card"><img src="img/newdoc.svg" class="img"></a>
-            <a id="editLink" th:href="@{/edit-personal-card/{id}(id = 2)}"><img id="editImage" src="img/edit.svg" class="img"></a>
+            <!--<a id="editLink" th:href="@{/edit-personal-card/{id}(id = 2)}"><img id="editImage" src="img/edit.svg" class="img"></a>-->
+            <!--<a id="editLink" th:href="@{/edit-personal-card/{id}(id=${param.personalCard.id})}">-->
+                <img id="editImage" src="img/edit.svg" class="img">
+            </a>
 <!--            @{/edit-personal-card/{id}(id = 0)}-->
             <!-- <a href="delete.html"><img src="img/delete.svg" class="img"></a> -->
             <a class="css-modal-details">  

@@ -81,39 +81,38 @@
 <!--                    </div>-->
 <!--                </div>-->
                 <div class="fullName">
-                    <label for="fullName" class="fullname"><b>ФИО</b></label>
+                    <label class="fullname"><b>ФИО</b></label>
                     <div>
-                        <input type="text" id="fullName" placeholder="ФИО" name="fullName" th:field="*{personalCard.fullName}">
+                        <input type="text" placeholder="ФИО" name="fullName" th:field="*{personalCard.fullName}">
                     </div>
                 </div>
                 <div class="date">
-                    <label for="dateOfBirth">Дата рождения</label>
+                    <label>Дата рождения</label>
                     <div>
                         <input type="date" name="dateOfBirth" th:field="*{personalCard.dateOfBirth}" >
                     </div>            
                                      
                 </div>
                 <div class="age">
-                    <label for="age" class="age"><b>Возраст</b></label>
+                    <label class="age"><b>Возраст</b></label>
                     <div>
                         <input type="text" placeholder="Введите возраст" name="age" th:field="*{personalCard.age}">
                     </div>
                 </div>
                 <div class="gender">
-                    <label for="gender" class="gender"><b>Пол</b></label>
+                    <label class="gender"><b>Пол</b></label>
                     <div>
-                        <!-- <input type="text" placeholder="Введите пол" name="gender" required >  -->
-                        <select name="" id="" class="flex-median-select" style="font-size: 20px;">
-                            <option>Мужской</option>
-                            <option>Женский</option>
+                        <select th:field="${sex.gender}" class="flex-median-select" style="font-size: 20px; " >
+                            <option value="Мужской">Мужской</option>
+                            <option value="Женский">Женский</option>
 <!--                            <option th:value="${('-')}" th:text="'-'"></option>-->
                         </select>
                     </div>
                 </div>
                 <div class="cityName">
-                    <label for="cityName" class="cityName"><b>Город</b></label>
+                    <label class="cityName"><b>Город</b></label>
                     <div>
-                        <input type="text" placeholder="Введите город" id="cityName" name="cityName" th:field="${personalCard.city}" >
+                        <input type="text" placeholder="Введите город" name="cityName" th:field="${city.name}" >
                     </div>
                     
                 </div>
@@ -124,55 +123,55 @@
                     </div>
                 </div> -->
                  <div class="phone">
-                    <label for="phone" class="phone"><b>Телефон</b></label>
+                    <label class="phone"><b>Телефон</b></label>
                     <div>
                         <input type="text" placeholder="Введите телефон" name="phone" th:field="${personalCard.phone}" >
                     </div>
                      
                 </div>
                 <div class="status">
-                    <label for="status" class="status"><b>Статус</b></label>
+                    <label class="status"><b>Статус</b></label>
                     <div>
-                        <input type="text" placeholder="Введите статус" name="status" th:field="${personalCard.status}" >
+                        <input type="text" placeholder="Введите статус" name="status" th:field="${status.field}" >
                     </div>
                      
                 </div>
                 <div class="salary">
-                    <label for="salary" class="salary" ><b>Желаемая заработная плата</b></label>
+                    <label class="salary" ><b>Желаемая заработная плата</b></label>
                     <div>
                         <input type="text" placeholder="Введите желаемую зарплата" name="salary" th:field="${personalCard.salary}" >
                     </div>
                     
                 </div>
                 <div class="post">
-                    <label for="post" class="post"><b>Желаемая должность</b></label>
+                    <label class="post"><b>Желаемая должность</b></label>
                     <div>
-                        <input type="text" placeholder="Введите желаемую должность" name="post" th:field="${personalCard.jobTitle}" >
+                        <input type="text" placeholder="Введите желаемую должность" name="post" th:field="${jobTitle.title}" >
                     </div>
                    
                 </div>
                 <div class="experience">
-                    <label for="experience" class="experience"><b>Опыт работы</b></label>
+                    <label class="experience"><b>Опыт работы</b></label>
                     <div>
                         <input type="text" placeholder="Введите опыт работы" name="experience" th:field="${personalCard.experience}" >
                     </div>
                 </div>
                 <div class="Education">
-                    <label for="Education" class="Education"><b>Образование</b></label>
+                    <label class="Education"><b>Образование</b></label>
                     <div>
                         <input type="text" placeholder="Введите образование" name="Education" th:field="${personalCard.education}" >
                     </div>
                     
                 </div>
                 <div class="skills">
-                    <label for="skills" class="skills"><b>Ключевые навыки</b></label>
+                    <label class="skills"><b>Ключевые навыки</b></label>
                     <div>
                         <input type="text" placeholder="Введите ключевые навыки" name="skills" th:field="${personalCard.skills}" >
                     </div>
                     
                 </div>
                 <div class="comments">
-                    <label for="comments" class="comments" th:field="${personalCard.comments}"><b>Комментарии</b></label>
+                    <label class="comments" th:field="${personalCard.comments}"><b>Комментарии</b></label>
                     <div>
                         <!-- <textarea  placeholder="Измените комментарии" name="comments" required >  -->
                             <p style="margin: 0;"><textarea rows="10" cols="45" name="text"></textarea></p>   
