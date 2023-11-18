@@ -1,6 +1,7 @@
 package com.example.candidate.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 
@@ -18,7 +19,7 @@ public class PersonalCard {
                         Integer salary, String phone,
                         String experience, String education,
                         String skills, String comments,
-                        Sex sex, City city,
+                        String sex, City city,
                         JobTitle jobTitle, Status status
 //                        byte[] imagesBytes
     )
@@ -54,6 +55,9 @@ public class PersonalCard {
     @Column(columnDefinition = "Integer", name = "personal_card_age")
     private Integer age;
 
+    @Column(columnDefinition = "TEXT", name = "personal_card_sex")
+    private String sex;
+
     @Column(columnDefinition = "Integer", name = "personal_card_salary")
     private Integer salary;
 
@@ -76,10 +80,12 @@ public class PersonalCard {
 //    @Lob // аннотация указывает что это поле должно быть храниться в виде большого объекта
 //    private byte[] imagesBytes;
 
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "creation_date")
+    private Date creationDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sex_id")
-    private Sex sex;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id")
@@ -181,11 +187,11 @@ public class PersonalCard {
 //        this.imagesBytes = imagesBytes;
 //    }
 
-    public Sex getSex() {
+    public String getSex() {
         return sex;
     }
 
-    public void setSex(Sex sex) {
+    public void setSex(String sex) {
         this.sex = sex;
     }
 

@@ -21,8 +21,8 @@ public class JobTitleService {
     }
 
     public JobTitle getById(Long id) {
-        Optional<JobTitle> optionalCity = repo.findById(id);
-        return optionalCity.orElse(null);
+        Optional<JobTitle> optionalJobTitle = repo.findById(id);
+        return optionalJobTitle.orElse(null);
     }
 
     public boolean saveOrUpdate(JobTitle item) {

@@ -22,14 +22,14 @@ public class PersonalCardService {
     }
 
     public PersonalCard getById(Long id) {
-        Optional<PersonalCard> optionalCity = repo.findById(id);
-        return optionalCity.orElse(null);
+        Optional<PersonalCard> result = repo.findById(id);
+        return result.orElse(null);
     }
 
-    public boolean saveOrUpdate(PersonalCard item) {
-        PersonalCard updated = repo.save(item);
+    public void saveOrUpdate(PersonalCard item) {
+        repo.save(item);
 
-        return repo.findById(updated.getId()).isPresent();
+        //repo.findById(updated.getId());
     }
 
     public boolean deleteById(Long id) {

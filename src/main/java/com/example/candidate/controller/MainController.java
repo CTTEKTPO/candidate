@@ -37,35 +37,30 @@ public class MainController {
 
 
     private final PersonalCardRepository personalCardRepository;
-    private final SexRepository sexRepository;
     private final CityRepository cityRepository;
     private final JobTitleRepository jobTitleRepository;
     private final StatusRepository statusRepository;
 
     private final CityService cityService;
     private final PersonalCardService personalCardService;
-    private final SexService sexService;
     private final JobTitleService jobTitleService;
     private final StatusService statusService;
 
 
     public MainController(
             PersonalCardRepository personalCardRepository,
-            SexRepository sexRepository,
             CityRepository cityRepository,
             JobTitleRepository jobTitleRepository,
             StatusRepository statusRepository,
             CityService cityService,
             PersonalCardService personalCardService,
-            SexService sexService, JobTitleService jobTitleService, StatusService statusService) {
+            JobTitleService jobTitleService, StatusService statusService) {
         this.personalCardRepository = personalCardRepository;
-        this.sexRepository = sexRepository;
         this.cityRepository = cityRepository;
         this.jobTitleRepository = jobTitleRepository;
         this.statusRepository = statusRepository;
         this.cityService = cityService;
         this.personalCardService = personalCardService;
-        this.sexService = sexService;
         this.jobTitleService = jobTitleService;
         this.statusService = statusService;
     }
@@ -77,121 +72,50 @@ public class MainController {
             return "job_seekers";
         }
 
-        @GetMapping("/add-personal-card")
+        @GetMapping("/newCandidate")
         public String showAddPersonalCardForm(Model model) {
-//            List<Sex> sexes = sexRepository.findAll();
-//            List<City> cities = cityRepository.findAll();
-//            List<JobTitle> jobTitles = jobTitleRepository.findAll();
-//            List<Status> statuses = statusRepository.findAll();
+            List<City> cities = cityService.getAll();
+            List<JobTitle> jobTitles = jobTitleService.getAll();
+            List<Status> statuses = statusService.getAll();
 
+            model.addAttribute("pageTitle", "Add New User");
             model.addAttribute("personalCard", new PersonalCard());
-            model.addAttribute("sex",new Sex());
-            model.addAttribute("city", new City());
-            model.addAttribute("jobTitle", new JobTitle());
-            model.addAttribute("status", new Status());
-//            model.addAttribute("sexes",sexes);
-//            model.addAttribute("cities", cities);
-//            model.addAttribute("jobTitles", jobTitles);
-//            model.addAttribute("statuses", statuses);
+            model.addAttribute("city", cities);
+            model.addAttribute("jobTitle", jobTitles);
+            model.addAttribute("status", statuses);
 
             return "addendum";
         }
 
-        @PostMapping("/add-personal-card")
-        public String addPersonalCard(
-                PersonalCard personalCard,
-                Sex sex,
-                City city,
-                JobTitle jobTitle,
-                Status status
-                )
-
-//                @ModelAttribute("personalCard") PersonalCard personalCard),
-//                                      @ModelAttribute("sex")Sex sex,
-//                                      @ModelAttribute("city")City city,
-//                                      @ModelAttribute("citiesAdd") City addCity,
-//                                      @ModelAttribute("jobTitles")JobTitle jobTitle,
-//                                      @ModelAttribute("statuses")Status status)
-//    @RequestParam("imageFile") MultipartFile imageFile) throws IOException
-                                       {
-//                                                           if (!imageFile.isEmpty()) {
-//                    existingPersonalCard.setImagesBytes(imageFile.getBytes());
-//                }
-
-//            personalCard.setSex(sexRepository.findById(personalCard.getSex().getId()).orElse(null));
-//            personalCard.setCity(cityRepository.findById(personalCard.getCity().getId()).orElse(null));
-//            personalCard.setJobTitle(jobTitleRepository.findById(personalCard.getJobTitle().getId()).orElse(null));
-//            personalCard.setStatus(statusRepository.findById(personalCard.getStatus().getId()).orElse(null));
-//            personalCard.setDateOfBirth(personalCard.getDateOfBirth());
+        @PostMapping("/saveCandidate")
+        public String addPersonalCard(PersonalCard personalCard){
 
             personalCardService.saveOrUpdate(personalCard);
-            sexService.saveOrUpdate(sex);
-            cityService.saveOrUpdate(city);
-            jobTitleService.saveOrUpdate(jobTitle);
-            statusService.saveOrUpdate(status);
-
             return "redirect:/";
         }
 
-        //ДОПИСАТЬ РЕДИРЕКТ НА ПОСТ ЗАПРОС, КОТОРЫЙ ВНАЧАЛЕ ДОБАВЛЯЕТ ИЛИ ПРОВЕРЯЕТ ДАННЫЕ В ДРУГИХ ТАБЛИЦАХ
-        // ПОСЛЕ НАЖАТИЯ НА КНОПКУ ДОБАВИТЬ НА СТРАНИЦЕ ADDENDUM
-        //ПОТОМ ВЫЗЫВАЕТСЯ @PostMapping("/add-personal-card") ДЛЯ ДОБАВЛЕНИЯ В ОСНОВНУЮ ТАБЛ.
 
         @GetMapping("/edit-personal-card/{id}")
         public String showEditPersonalCardForm(@PathVariable("id") Long id, Model model) {
-            System.out.println("In get " + id);
-            Optional<PersonalCard> optionalPersonalCard = personalCardRepository.findById(id);
-            List<Sex> sexes = sexRepository.findAll();
-            List<City> cities = cityRepository.findAll();
-            List<JobTitle> jobTitles = jobTitleRepository.findAll();
-            List<Status> statuses = statusRepository.findAll();
+            List<City> cities = cityService.getAll();
+            List<JobTitle> jobTitles = jobTitleService.getAll();
+            List<Status> statuses = statusService.getAll();
 
-            if (optionalPersonalCard.isPresent()) {
-                //PersonalCard personalCard = personalCardService.getById(id);
-                PersonalCard personalCard = optionalPersonalCard.get();
-                model.addAttribute("personalCard", personalCard);
-                model.addAttribute("sexes", sexes);
-                model.addAttribute("cities", cities);
-                model.addAttribute("jobTitles", jobTitles);
-                model.addAttribute("statuses", statuses);
-                return "editing";
-            } else {
-                return "redirect:/";
-            }
-        }
+            PersonalCard personalCard = personalCardService.getById(id);
 
-        @PostMapping("/edit-personal-card/{id}")
-        public String editPersonalCard(@PathVariable("id") Long id, @ModelAttribute("personalCard") PersonalCard updatedPersonalCard){
-//                                       @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
-            Optional<PersonalCard> optionalPersonalCard = personalCardRepository.findById(id);
-            if (optionalPersonalCard.isPresent()) {
-                PersonalCard existingPersonalCard = optionalPersonalCard.get();
-                existingPersonalCard.setFullName(updatedPersonalCard.getFullName());
-                existingPersonalCard.setDateOfBirth(updatedPersonalCard.getDateOfBirth());
-                existingPersonalCard.setAge(updatedPersonalCard.getAge());
-                existingPersonalCard.setSalary(updatedPersonalCard.getSalary());
-                existingPersonalCard.setPhone(updatedPersonalCard.getPhone());
-                existingPersonalCard.setExperience(updatedPersonalCard.getExperience());
-                existingPersonalCard.setEducation(updatedPersonalCard.getEducation());
-                existingPersonalCard.setSkills(updatedPersonalCard.getSkills());
-                existingPersonalCard.setComments(updatedPersonalCard.getComments());
-                existingPersonalCard.setSex(sexRepository.findById(updatedPersonalCard.getSex().getId()).orElse(null));
-                existingPersonalCard.setCity(cityRepository.findById(updatedPersonalCard.getCity().getId()).orElse(null));
-                existingPersonalCard.setJobTitle(jobTitleRepository.findById(updatedPersonalCard.getJobTitle().getId()).orElse(null));
-                existingPersonalCard.setStatus(statusRepository.findById(updatedPersonalCard.getStatus().getId()).orElse(null));
+            model.addAttribute("pageTitle", "Edit User (ID: " + id + ")");
+            model.addAttribute("editMode", true);  // Установка атрибута editMode для выбора картинки (ред или доб)
+            model.addAttribute("personalCard", personalCard);
+            model.addAttribute("city", cities);
+            model.addAttribute("jobTitle", jobTitles);
+            model.addAttribute("status", statuses);
+            return "addendum";
 
-//                if (!imageFile.isEmpty()) {
-//                    existingPersonalCard.setImagesBytes(imageFile.getBytes());
-//                }
-
-                personalCardRepository.save(existingPersonalCard);
-            }
-            return "redirect:/";
         }
 
         @GetMapping("/delete-personal-card/{id}")
         public String deletePersonalCard(@PathVariable("id") Long id) {
-            personalCardRepository.deleteById(id);
+            personalCardService.deleteById(id);
             return "redirect:/";
         }
     }

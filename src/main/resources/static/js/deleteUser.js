@@ -1,34 +1,93 @@
+/*function redirectToDeletePage() {
+    // Предотвращаем стандартное действие по клику на ссылке
+    event.preventDefault();
 
-// <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    var radioButtons = document.getElementsByName('selectedCandidate');
+    var selectedCandidateId = null;
 
-    $(document).ready(function() {
-    $('.yes').click(function () {
-        // Получить выбранный ID соискателя из радиокнопки
-        var selectedId = $('input[type="radio"][name="selectedCandidate"]:checked').val();
+    for (var i = 0; i < radioButtons.length; i++) {
+        if (radioButtons[i].checked) {
+            selectedCandidateId = radioButtons[i].value;
+            break;
+        }
+    }
 
-        // Выполнить действия для удаления пользователя с выбранным ID
-        if (selectedId) {
-            // Выполнить AJAX-запрос или вызвать функцию удаления пользователя
-            // Пример AJAX-запроса:
-            $.ajax({
-                url: '/delete-personal-card/' + selectedId,
-                type: 'DELETE',
-                success: function (response) {
-                    // Действия после успешного удаления пользователя
-                    console.log('Пользователь удален');
-                    window.location.href = '/';
-                },
-                error: function (xhr, status, error) {
-                    // Действия в случае ошибки удаления пользователя
-                    console.error('Ошибка при удалении пользователя');
-                    // Обработать ошибку или выполнить другие действия
-                }
+    if (selectedCandidateId !== null) {
+        // Обновляем текст в параграфе
+        var confirmationText = document.getElementById('confirmationText');
+        confirmationText.textContent = `Вы действительно хотите удалить кандидата с ID = ${selectedCandidateId} ?`;
+
+        // Показываем подтверждение удаления
+        var detailsModal = document.querySelector('.details-modal');
+        detailsModal.setAttribute('open', 'open');
+
+        // Подготавливаем ссылку для удаления
+        var deleteURL = '/delete-personal-card/' + selectedCandidateId;
+
+//        // При клике на "Да" вызывается функция удаления
+//        var yesButton = document.querySelector('.yes');
+//        yesButton.addEventListener('click', function () {
+//            window.location.href = deleteURL;
+//        });
+        // Присваиваем ссылку кнопке "Да"
+        var yesButton = document.querySelector('.yes');
+        yesButton.setAttribute('href', deleteURL);
+
+        // При клике на "Нет" закрываем подтверждение
+        var noButton = document.querySelector('.no');
+        noButton.addEventListener('click', function () {
+            detailsModal.removeAttribute('open');
+        });
+    } else {
+        alert('Выберите кандидата для удаления.');
+    }
+}
+
+// Присвоение функции обработчика событий на изображение после загрузки страницы
+document.addEventListener('DOMContentLoaded', function () {
+    var deleteLink = document.getElementById('deleteLink');
+
+    // При клике на изображение вызывается функция redirectToDeletePage
+    deleteLink.addEventListener('click', redirectToDeletePage);
+});
+*/
+
+document.addEventListener('DOMContentLoaded', function () {
+    var deleteLink = document.getElementById('deleteLink');
+    var detailsModal = deleteLink.querySelector('.details-modal');
+    var confirmationText = deleteLink.querySelector('#confirmationText');
+    var yesButton = deleteLink.querySelector('.yes');
+    var noButton = deleteLink.querySelector('.no');
+
+    deleteLink.addEventListener('click', function (event) {
+        event.preventDefault();
+
+        var radioButtons = document.getElementsByName('selectedCandidate');
+        var selectedCandidateId = null;
+
+        for (var i = 0; i < radioButtons.length; i++) {
+            if (radioButtons[i].checked) {
+                selectedCandidateId = radioButtons[i].value;
+                break;
+            }
+        }
+
+        if (selectedCandidateId !== null) {
+            confirmationText.textContent = `Вы действительно хотите удалить кандидата с ID = ${selectedCandidateId} ?`;
+
+            detailsModal.setAttribute('open', 'open');
+
+            var deleteURL = '/delete-personal-card/' + selectedCandidateId;
+            yesButton.addEventListener('click', function () {
+                window.location.href = deleteURL;
             });
+
+            noButton.addEventListener('click', function () {
+                detailsModal.removeAttribute('open');
+                window.location.href = '/';
+            });
+        } else {
+            alert('Выберите кандидата для удаления.');
         }
     });
-
-    $('.no').click(function() {
-    $('.details-modal').removeAttr('open')
-})
-})
-
+});

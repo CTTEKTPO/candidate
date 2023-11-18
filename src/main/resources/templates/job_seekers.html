@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Candidates.MegaSoft V0.1</title>
-    <link rel="stylesheet" href="css/job_seekers.css">
-    <link rel="stylesheet" href="css/style-modal.css">
-    <link rel="stylesheet" href="css/delete.css">
+    <title>Candidates.RecruitRight</title>
+    <link th:href="@{/css/job_seekers.css}" rel="stylesheet">
+    <link th:href="@{/css/style-modal.css}" rel="stylesheet">
+    <link th:href="@{/css/delete.css}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"  />
 </head>
 <body>
     <header>
@@ -28,16 +29,16 @@
                
             <a href="#openModal" class="reference">Справка</a>
 
-            <a href="#x" class="overlay" id="win2"></a>
+            <a href="#" class="overlay" id="win2"></a>
             <div class="popup">
                 <div class="flex-popup">
                     <img src="img/person.svg" width="130px" class="img-popup">
                     <div class="person-desc">
-                        <p>Учет кадров V.1.0 </p>
+                        <p>RecruitRight</p>
                         <p>@Megasoft</p>
-                        <p>Петров А.В. все права защищены</p>
+                        <p>Хромченков А.П. все права защищены</p>
                         <p>Email для связи c разработчиком:</p>
-                        <p>mail@gmail.com</p>
+                        <p>cttektpo98@gmail.com</p>
                     </div>
                     
                 </div>
@@ -50,29 +51,32 @@
     <main>
 
         <div class="group-img">
-            <a href="/add-personal-card"><img src="img/newdoc.svg" class="img"></a>
+            <a href="/newCandidate"><img src="img/newdoc.svg" class="img"></a>
             <!--<a id="editLink" th:href="@{/edit-personal-card/{id}(id = 2)}"><img id="editImage" src="img/edit.svg" class="img"></a>-->
             <!--<a id="editLink" th:href="@{/edit-personal-card/{id}(id=${param.personalCard.id})}">-->
+            <a id="editLink" href="#">
                 <img id="editImage" src="img/edit.svg" class="img">
             </a>
+
 <!--            @{/edit-personal-card/{id}(id = 0)}-->
             <!-- <a href="delete.html"><img src="img/delete.svg" class="img"></a> -->
-            <a class="css-modal-details">  
+
+            <a id="deleteLink" class="css-modal-details">
                 <details class="details-modal">
                     <summary><img src="img/delete.svg" alt="" srcset="" style="width: 45px; margin-left: -10px"> </summary>
-                        <div class="cmc">
-                            <div class="cmt">
-                                <p>Вы действительно хотите удалить соискателя под ID = 1 ?</p>
-                                <button class="yes">Да</button>
-                                <button class="no">Нет</button>        
-                            </div>
+                    <div class="cmc">
+                        <div class="cmt">
+                            <p id="confirmationText"></p>
+                            <button class="yes">Да</button>
+                            <button class="no">Нет</button>
                         </div>
+                    </div>
                 </details>
             </a>
             <!-- <a href="median.html"><img src="img/chart.svg " class="img"></a> -->
         </div>
         <div>
-            <button class="group-btn"><a href="job_seekers.html">Соискатели</a></button>
+            <button class="group-btn"><a href="/">Соискатели</a></button>
             <!-- <button class="group-btn"><a href="job_openings.html">Вакансии</a></button> -->
         </div>
 
@@ -103,6 +107,7 @@
             </div>
         </table> -->
         <form>
+        <div>
         <table class="job_seekers">
             <tr>
                 <th></th>
@@ -121,13 +126,14 @@
                 <th>Комментарии</th>
                 <th>Статус</th>
             </tr>
+            <th:block>
             <tr th:each="personalCard : ${personalCards}">
                 <th><input type="radio" name="selectedCandidate" th:value="${personalCard.id}" ></th>
                 <td th:text="${personalCard?.id}?: ''"></td>
                 <td th:text="${personalCard?.fullName}?: ''"></td>
                 <td th:text="${#dates.format(personalCard?.dateOfBirth,'dd.MM.yyyy')}?: ''"></td>
                 <td th:text="${personalCard?.age}?: ''"></td>
-                <td th:text="${personalCard.sex?.gender}?: ''"></td>
+                <td th:text="${personalCard?.sex}?: ''"></td>
                 <td th:text="${personalCard.city?.name}?: ''"></td>
                 <td th:text="${personalCard?.phone}?: ''"></td>
                 <td th:text="${personalCard.jobTitle?.title}?: ''"></td>
@@ -138,10 +144,12 @@
                 <td th:text="${personalCard?.comments} ?: ''"></td>
                 <td th:text="${personalCard.status?.field} ?: ''"></td>
             </tr>
+            </th:block>
         </table>
+        </div>
         </form>
     </main>
 </body>
-<script src="../static/js/deleteUser.js"></script>
-<script src="../static/js/changeCandidate.js"></script>
+<script src="../js/deleteUser.js"></script>
+<script src="../js/changeCandidate.js"></script>
 </html>

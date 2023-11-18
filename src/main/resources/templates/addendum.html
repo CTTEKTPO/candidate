@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AddNewCandidate</title>
-    <link rel="stylesheet" href="css/job_seekers.css">
-    <link rel="stylesheet" href="css/style-modal.css">
-    <link rel="stylesheet" href="css/addendum.css">
+    <title>[[${pageTitle}]]</title>
+    <link th:href="@{/css/job_seekers.css}" rel="stylesheet">
+    <link th:href="@{/css/style-modal.css}" rel="stylesheet">
+    <link th:href="@{/css/addendum.css}" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -28,16 +28,16 @@
                
             <a href="#openModal" class="reference">Справка</a>
 
-            <a href="#x" class="overlay" id="win2"></a>
+            <a href="#" class="overlay" id="win2"></a>
             <div class="popup">
                 <div class="flex-popup">
-                    <img src="img/person.svg" width="130px" class="img-popup">
+                    <img th:src="@{/img/person.svg}" width="130px" class="img-popup">
                     <div class="person-desc">
-                        <p>Учет кадров V.1.0 </p>
+                        <p>RecruitRight</p>
                         <p>@Megasoft</p>
-                        <p>Петров А.В. все права защищены</p>
+                        <p>Хромченков А.П. все права защищены</p>
                         <p>Email для связи c разработчиком:</p>
-                        <p>mail@gmail.com</p>
+                        <p>cttektpo98@gmail.com</p>
                     </div>
                     
                 </div>
@@ -50,7 +50,7 @@
 
         <div class="group-img">
             <!-- <a href="addendum.html"></a> -->
-            <img src="img/newdoc.svg" class="img">
+            <img th:src="${editMode} ? @{/img/edit.svg} : @{/img/newdoc.svg}" class="img">
             <!-- <a href="editing.html"><img src="img/edit.svg" class="img"></a> -->
             <!-- <a href="delete.html"><img src="img/delete.svg" class="img"></a> -->
             <!-- <a href=""><img src="img/chart.svg " class="img"></a> -->
@@ -59,9 +59,10 @@
             <button class="group-btn"><a href="/">Соискатели</a></button>
             <!-- <button class="group-btn"><a href="job_openings.html">Вакансии</a></button> -->
         </div>
-
-        <form th:action="@{/add-personal-card}" method="post" class="form-add" enctype="multipart/form-data">
+    <H1>[[${pageTitle}]]</H1>
+        <form th:action="@{/saveCandidate}" method="post" class="form-add" enctype="multipart/form-data" th:object="${personalCard}">
             <div class="flex-form">
+                <input type="hidden" th:field="*{id}">
 <!--                <div class="surname">-->
 <!--                    <label for="surname" class="surname_per"><b>Фамилия</b></label>-->
 <!--                    <div>-->
@@ -83,26 +84,27 @@
                 <div class="fullName">
                     <label class="fullname"><b>ФИО</b></label>
                     <div>
-                        <input type="text" placeholder="ФИО" name="fullName" th:field="*{personalCard.fullName}">
+                        <input type="text" placeholder="ФИО" name="fullName" th:field="*{fullName}">
                     </div>
                 </div>
                 <div class="date">
                     <label>Дата рождения</label>
                     <div>
-                        <input type="date" name="dateOfBirth" th:field="*{personalCard.dateOfBirth}" >
+                        <input type="date" name="dateOfBirth" th:field="*{dateOfBirth}" >
                     </div>            
                                      
                 </div>
                 <div class="age">
                     <label class="age"><b>Возраст</b></label>
                     <div>
-                        <input type="text" placeholder="Введите возраст" name="age" th:field="*{personalCard.age}">
+                        <input type="text" placeholder="Введите возраст" name="age" th:field="*{age}">
                     </div>
                 </div>
                 <div class="gender">
                     <label class="gender"><b>Пол</b></label>
                     <div>
-                        <select th:field="${sex.gender}" class="flex-median-select" style="font-size: 20px; " >
+                        <select th:field="*{sex}" class="flex-median-select" style="font-size: 20px;" >
+                            <option value="" style="color: grey;" selected hidden>Выберите пол</option>
                             <option value="Мужской">Мужской</option>
                             <option value="Женский">Женский</option>
 <!--                            <option th:value="${('-')}" th:text="'-'"></option>-->
@@ -110,11 +112,13 @@
                     </div>
                 </div>
                 <div class="cityName">
-                    <label class="cityName"><b>Город</b></label>
+                    <label for="city"><b>Город:</b></label>
                     <div>
-                        <input type="text" placeholder="Введите город" name="cityName" th:field="${city.name}" >
+                    <select id="city" name="city" th:field="*{city}" class="flex-median-select" style="font-size: 20px;">
+                        <option value="" style="color: grey;" selected hidden>Выберите город</option>
+                        <option th:each="city : ${city}" th:value="${city.id}" th:text="${city.name}"></option>
+                    </select>
                     </div>
-                    
                 </div>
                 <!-- <div class="interview">
                     <label for="interview" class="interview"><b>Был\не был на собеседовании</b></label>
@@ -125,56 +129,61 @@
                  <div class="phone">
                     <label class="phone"><b>Телефон</b></label>
                     <div>
-                        <input type="text" placeholder="Введите телефон" name="phone" th:field="${personalCard.phone}" >
+                        <input type="text" placeholder="Введите телефон" name="phone" th:field="*{phone}" >
                     </div>
                      
                 </div>
                 <div class="status">
-                    <label class="status"><b>Статус</b></label>
+                    <label for="status"><b>Статус</b></label>
                     <div>
-                        <input type="text" placeholder="Введите статус" name="status" th:field="${status.field}" >
+                    <select id="status" name="status" th:field="*{status}" class="flex-median-select" style="font-size: 20px;">
+                        <option value="" style="color: grey;" selected hidden>Выберите статус</option>
+                        <option th:each="status : ${status}" th:value="${status.id}" th:text="${status.field}"></option>
+                    </select>
                     </div>
-                     
                 </div>
                 <div class="salary">
                     <label class="salary" ><b>Желаемая заработная плата</b></label>
                     <div>
-                        <input type="text" placeholder="Введите желаемую зарплата" name="salary" th:field="${personalCard.salary}" >
+                        <input type="text" placeholder="Введите желаемую зарплату" name="salary" th:field="*{salary}" >
                     </div>
                     
                 </div>
                 <div class="post">
-                    <label class="post"><b>Желаемая должность</b></label>
+                    <label for="jobTitle"><b>Желаемая должность</b></label>
                     <div>
-                        <input type="text" placeholder="Введите желаемую должность" name="post" th:field="${jobTitle.title}" >
+                    <select id="jobTitle" name="jobTitle" th:field="*{jobTitle}" class="flex-median-select" style="font-size: 20px;">
+                        <option value="" style="color: grey;" selected hidden>Выберите желаемую должность</option>
+                        <option th:each="jobTitle : ${jobTitle}" th:value="${jobTitle.id}" th:text="${jobTitle.title}"></option>
+                    </select>
                     </div>
-                   
                 </div>
                 <div class="experience">
                     <label class="experience"><b>Опыт работы</b></label>
                     <div>
-                        <input type="text" placeholder="Введите опыт работы" name="experience" th:field="${personalCard.experience}" >
+                        <input type="text" placeholder="Введите опыт работы" name="experience" th:field="*{experience}" >
                     </div>
                 </div>
                 <div class="Education">
                     <label class="Education"><b>Образование</b></label>
                     <div>
-                        <input type="text" placeholder="Введите образование" name="Education" th:field="${personalCard.education}" >
+                        <input type="text" placeholder="Введите образование" name="Education" th:field="*{education}" >
                     </div>
                     
                 </div>
                 <div class="skills">
                     <label class="skills"><b>Ключевые навыки</b></label>
                     <div>
-                        <input type="text" placeholder="Введите ключевые навыки" name="skills" th:field="${personalCard.skills}" >
+                        <input type="text" placeholder="Введите ключевые навыки" name="skills" th:field="*{skills}" >
                     </div>
                     
                 </div>
                 <div class="comments">
-                    <label class="comments" th:field="${personalCard.comments}"><b>Комментарии</b></label>
+                    <label class="comments"><b>Комментарии</b></label>
                     <div>
-                        <!-- <textarea  placeholder="Измените комментарии" name="comments" required >  -->
-                            <p style="margin: 0;"><textarea rows="10" cols="45" name="text"></textarea></p>   
+                            <p style="margin: 0;">
+                                <textarea rows="10" cols="45" name="comments" th:field="*{comments}"></textarea>
+                            </p>
                     </div>
                 </div>
 <!--                <div class="image">-->
@@ -185,9 +194,9 @@
 <!--                    -->
 <!--                </div> -->
             </div>
-           
-           
-        <button type="submit" class="add" style="margin-left: 30px;">Добавить</button>
+
+
+            <button type="submit" class="add" style="margin-left: 30px;" th:text="${editMode} ? 'Сохранить' : 'Добавить'"></button>
         </form>
 
 

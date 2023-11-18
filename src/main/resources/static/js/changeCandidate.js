@@ -1,25 +1,31 @@
-// // Получаем ссылку и картинку по их id
-//
-// var editImage = document.getElementById('editImage');
-// console.log(editImage)
-// console.log(editLink)
-//
-// // Добавляем обработчик события клика на картинку
-// editImage.addEventListener('click', function() {
-//
-//
-// });
-function editPersonalCard(){
-var editLink = document.getElementById('editLink');
 
-// Получаем значение выбранной радиокнопки
-var selectedId = document.querySelector('input[name="selectedCandidate"]:checked').value;
-console.log((selectedId))
+function redirectToEditPage() {
 
-// Заменяем значение переменной {id} в ссылке на выбранное значение
-var newHref = editLink.getAttribute('href').replace("{id}", selectedId);
-console.log(newHref)
+    // Предотвращаем стандартное действие по клику на ссылке
+    event.preventDefault();
 
-// Выполняем переход по ссылке
-window.location.href = newHref;
+    var radioButtons = document.getElementsByName('selectedCandidate');
+    var selectedCandidateId = null;
+
+    for (var i = 0; i < radioButtons.length; i++) {
+        if (radioButtons[i].checked) {
+            selectedCandidateId = radioButtons[i].value;
+            break;
+        }
+    }
+
+    if (selectedCandidateId !== null) {
+        var editUrl = '/edit-personal-card/' + selectedCandidateId;
+        window.location.href = editUrl;
+    } else {
+        alert('Выберите кандидата для редактирования.');
+    }
 }
+
+// Присвоение функции обработчика событий на изображение после загрузки страницы
+document.addEventListener('DOMContentLoaded', function () {
+    var editLink = document.getElementById('editLink');
+
+    // При клике на изображение вызывается функция redirectToEditPage
+    editLink.addEventListener('click', redirectToEditPage);
+});

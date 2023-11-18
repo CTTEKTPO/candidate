@@ -1,6 +1,7 @@
 package com.example.candidate.service;
 
 import com.example.candidate.model.City;
+import com.example.candidate.model.Status;
 import com.example.candidate.repository.CityRepository;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,8 @@ public class CityService {
     }
 
     public City getById(Long id) {
-        return repo.findById(id).get();
+        Optional<City> optionalCity = repo.findById(id);
+        return optionalCity.orElse(null);
     }
 
     public boolean saveOrUpdate(City item) {

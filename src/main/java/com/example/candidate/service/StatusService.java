@@ -22,8 +22,8 @@ public class StatusService {
     }
 
     public Status getById(Long id) {
-        Optional<Status> optionalCity = repo.findById(id);
-        return optionalCity.orElse(null);
+        Optional<Status> optionalStatus = repo.findById(id);
+        return optionalStatus.orElse(null);
     }
 
     public boolean saveOrUpdate(Status item) {
