@@ -2,7 +2,7 @@ body{
     background-image: url(../img/background.jpg);
     background-repeat: no-repeat;
     background-position: center;
-    background-size: cover; 
+    background-size: cover;
     height: 800px;
 }
 
@@ -71,14 +71,14 @@ body{
     border: none;
 }
 
- 
+
 /* Кнопка для открытия */
 .css-modal-details summary {
     display: inline-flex;
     margin: 10px;
 
 }
- 
+
 /* Кнопка при открытом окне переходит на весь экран */
 .css-modal-details details[open] summary {
     cursor: default;
@@ -90,12 +90,12 @@ body{
     width: 100%;
     height: 100%;
 }
- 
+
 /* Контейнер, который затемняет страницу */
 .css-modal-details details .cmc {
     display:flex;
     align-items:center;
-    justify-content:center;    
+    justify-content:center;
 }
 .css-modal-details details[open] .cmc {
     pointer-events: none;
@@ -108,10 +108,10 @@ body{
     animation: bg 0.5s ease;
     background: rgba(51, 122, 183, 0.7);
 }
- 
+
 /* Модальное окно */
 .css-modal-details details .cmt {
-    font-family: Verdana, sans-serif;  
+    font-family: Verdana, sans-serif;
     font-size: 16px;
     padding: 20px;
     width:80%;
@@ -129,7 +129,7 @@ body{
 .details-modal{
     display: inline-block;
 }
- 
+
 /* Декоративная кнопка с крестиком */
 .css-modal-details details[open] .cmc:after {
     content: "";
@@ -147,7 +147,7 @@ body{
     background-size: cover;
     animation: move 0.5s ease;
 }
- 
+
 .yes{
     padding: 5px 50px;
     background-color:  #52D94F;

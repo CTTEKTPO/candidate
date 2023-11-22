@@ -59,7 +59,6 @@
             <button class="group-btn"><a href="/">Соискатели</a></button>
             <!-- <button class="group-btn"><a href="job_openings.html">Вакансии</a></button> -->
         </div>
-    <H1>[[${pageTitle}]]</H1>
         <form th:action="@{/saveCandidate}" method="post" class="form-add" enctype="multipart/form-data" th:object="${personalCard}">
             <div class="flex-form">
                 <input type="hidden" th:field="*{id}">
@@ -195,7 +194,7 @@
 <!--                </div> -->
             </div>
 
-
+            <input type="hidden" th:field="*{creationDate}"  readonly="readonly">
             <button type="submit" class="add" style="margin-left: 30px;" th:text="${editMode} ? 'Сохранить' : 'Добавить'"></button>
         </form>
 

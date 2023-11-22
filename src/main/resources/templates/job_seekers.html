@@ -7,8 +7,8 @@
     <title>Candidates.RecruitRight</title>
     <link th:href="@{/css/job_seekers.css}" rel="stylesheet">
     <link th:href="@{/css/style-modal.css}" rel="stylesheet">
-    <link th:href="@{/css/delete.css}" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"  />
+<!--    <link th:href="@{/css/delete.css}" rel="stylesheet">-->
+<!--    <link th:href="@{/css/fordelete.css}" rel="stylesheet">-->
 </head>
 <body>
     <header>
@@ -40,7 +40,7 @@
                         <p>Email для связи c разработчиком:</p>
                         <p>cttektpo98@gmail.com</p>
                     </div>
-                    
+
                 </div>
     
                     
@@ -52,36 +52,39 @@
 
         <div class="group-img">
             <a href="/newCandidate"><img src="img/newdoc.svg" class="img"></a>
-            <!--<a id="editLink" th:href="@{/edit-personal-card/{id}(id = 2)}"><img id="editImage" src="img/edit.svg" class="img"></a>-->
-            <!--<a id="editLink" th:href="@{/edit-personal-card/{id}(id=${param.personalCard.id})}">-->
             <a id="editLink" href="#">
                 <img id="editImage" src="img/edit.svg" class="img">
             </a>
-
-<!--            @{/edit-personal-card/{id}(id = 0)}-->
-            <!-- <a href="delete.html"><img src="img/delete.svg" class="img"></a> -->
-
+            <a href="#deleteLink">
+            <img src="img/delete.svg" style="width: 45px; margin-left: -10px">
+            </a>
+            <a href="/median"><img src="img/chart.svg " class="img"></a>
             <a id="deleteLink" class="css-modal-details">
                 <details class="details-modal">
-                    <summary><img src="img/delete.svg" alt="" srcset="" style="width: 45px; margin-left: -10px"> </summary>
                     <div class="cmc">
                         <div class="cmt">
                             <p id="confirmationText"></p>
-                            <button class="yes">Да</button>
-                            <button class="no">Нет</button>
+                            <button class="yes" id ="yes">Да</button>
+                            <button class="no" id ="no">Нет</button>
                         </div>
                     </div>
                 </details>
             </a>
-            <!-- <a href="median.html"><img src="img/chart.svg " class="img"></a> -->
-        </div>
-        <div>
-            <button class="group-btn"><a href="/">Соискатели</a></button>
-            <!-- <button class="group-btn"><a href="job_openings.html">Вакансии</a></button> -->
+
+
         </div>
 
-        <!-- <p class="filt-desc">Фильтры</p>
-        <table class="filter">
+
+        <p class="filt-desc" style="margin-bottom: 10px;">Фильтры</p>
+        <div class="btn-filter">
+            <button onclick="updateTable()">Обновить таблицу соискателей</button>
+            <button onclick="addFilter()">Добавить фильтр</button>
+            <button onclick="removeFilter()">Удалить фильтр</button>
+            <button onclick="removeAllFilters()">Удалить все</button>
+        </div>
+        <div class="table-filter-container">
+        <table class="filter" id="filterTable">
+            <thead>
             <tr>
                 <th></th>
                 <th>Вкл.</th>
@@ -89,26 +92,19 @@
                 <th>Условие</th>
                 <th>Значение</th>
             </tr>
-            <tr>
-                <th><img src="img/triangle.svg" style="width: 12px;"></th>
-                <th><label class="container">
-                    <input type="checkbox" checked="checked">
-                    <span class="checkmark"></span>
-                </label></th>
-                <th></th>
-                <th></th>
-                <th></th>
-            </tr>
-            <div class="btn-filter">
-                <button>Обновить таблицу соискателей</button>
-                <button>Добавить фильтр</button>
-                <button>Удалить фильтр</button>
-                <button>Удалить все</button>
-            </div>
-        </table> -->
+            </thead>
+            <tbody>
+            <!-- Здесь будут добавляться строки с фильтрами -->
+            </tbody>
+        </table>
+        </div>
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <button class="group-btn"><a href="/">Соискатели</a></button>
+            <!-- <button class="group-btn"><a href="job_openings.html">Вакансии</a></button> -->
+        </div>
         <form>
-        <div>
-        <table class="job_seekers">
+        <div class="table-container">
+        <table>
             <tr>
                 <th></th>
                 <th>ID</th>
@@ -126,7 +122,6 @@
                 <th>Комментарии</th>
                 <th>Статус</th>
             </tr>
-            <th:block>
             <tr th:each="personalCard : ${personalCards}">
                 <th><input type="radio" name="selectedCandidate" th:value="${personalCard.id}" ></th>
                 <td th:text="${personalCard?.id}?: ''"></td>
@@ -144,12 +139,13 @@
                 <td th:text="${personalCard?.comments} ?: ''"></td>
                 <td th:text="${personalCard.status?.field} ?: ''"></td>
             </tr>
-            </th:block>
         </table>
         </div>
         </form>
+
     </main>
+    <script th:src="@{/js/deleteUser.js}"></script>
+    <script th:src="@{/js/changeCandidate.js}"></script>
+    <script th:src="@{/js/filter.js}"></script>
 </body>
-<script src="../js/deleteUser.js"></script>
-<script src="../js/changeCandidate.js"></script>
 </html>

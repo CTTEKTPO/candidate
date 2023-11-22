@@ -3,66 +3,32 @@ package com.example.candidate.controller;
 import com.example.candidate.service.*;
 import org.springframework.ui.Model;
 import com.example.candidate.model.*;
-import com.example.candidate.repository.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Controller
 public class MainController {
-/*
-    @Autowired
-    CityService cityService;
-
-    @Autowired
-    JobTitleService jobTitleService;
-
-    @Autowired
-    PersonalCardService personalCardService;
-
-    @Autowired
-    SexService sexService;
-
-    @Autowired
-    StatusService statusService;
-
-    @GetMapping({"/","/job_seekers"})
-    public String viewMainPage(){
-
-        return "job_seekers";
-    }*/
-
-
-    private final PersonalCardRepository personalCardRepository;
-    private final CityRepository cityRepository;
-    private final JobTitleRepository jobTitleRepository;
-    private final StatusRepository statusRepository;
 
     private final CityService cityService;
     private final PersonalCardService personalCardService;
     private final JobTitleService jobTitleService;
     private final StatusService statusService;
+    private final FilterService filterService;
 
 
     public MainController(
-            PersonalCardRepository personalCardRepository,
-            CityRepository cityRepository,
-            JobTitleRepository jobTitleRepository,
-            StatusRepository statusRepository,
             CityService cityService,
             PersonalCardService personalCardService,
-            JobTitleService jobTitleService, StatusService statusService) {
-        this.personalCardRepository = personalCardRepository;
-        this.cityRepository = cityRepository;
-        this.jobTitleRepository = jobTitleRepository;
-        this.statusRepository = statusRepository;
+            JobTitleService jobTitleService,
+            StatusService statusService, FilterService filterService) {
         this.cityService = cityService;
         this.personalCardService = personalCardService;
         this.jobTitleService = jobTitleService;
         this.statusService = statusService;
+        this.filterService = filterService;
     }
 
         @GetMapping("/")
@@ -89,7 +55,6 @@ public class MainController {
 
         @PostMapping("/saveCandidate")
         public String addPersonalCard(PersonalCard personalCard){
-
             personalCardService.saveOrUpdate(personalCard);
             return "redirect:/";
         }
@@ -101,16 +66,18 @@ public class MainController {
             List<JobTitle> jobTitles = jobTitleService.getAll();
             List<Status> statuses = statusService.getAll();
 
-            PersonalCard personalCard = personalCardService.getById(id);
-
-            model.addAttribute("pageTitle", "Edit User (ID: " + id + ")");
-            model.addAttribute("editMode", true);  // Установка атрибута editMode для выбора картинки (ред или доб)
-            model.addAttribute("personalCard", personalCard);
-            model.addAttribute("city", cities);
-            model.addAttribute("jobTitle", jobTitles);
-            model.addAttribute("status", statuses);
-            return "addendum";
-
+            try {
+                PersonalCard personalCard = personalCardService.getById(id);
+                model.addAttribute("pageTitle", "Edit User (ID: " + id + ")");
+                model.addAttribute("editMode", true);  // Установка атрибута editMode для выбора картинки (ред или доб)
+                model.addAttribute("personalCard", personalCard);
+                model.addAttribute("city", cities);
+                model.addAttribute("jobTitle", jobTitles);
+                model.addAttribute("status", statuses);
+                return "addendum";
+            }catch (Exception e){
+                return "redirect:/";
+            }
         }
 
         @GetMapping("/delete-personal-card/{id}")
@@ -118,6 +85,17 @@ public class MainController {
             personalCardService.deleteById(id);
             return "redirect:/";
         }
+
+        @GetMapping("/median")
+        public String showMedianPage(Model model){
+            List<PersonalCard> personalCards = personalCardService.getAll();
+            List<JobTitle> jobTitles = jobTitleService.getAll();
+            model.addAttribute("personalCard", personalCards);
+            model.addAttribute("jobTitles", jobTitles);
+            return "median";
+        }
+
+
     }
 
 

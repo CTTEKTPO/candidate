@@ -161,7 +161,13 @@ th, td {
     border: none;
 }
 
-.job_seekers{
-    margin-bottom: 110px;
-
+.table-container {
+    max-height: 600px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+.table-filter-container {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 10px;
 }

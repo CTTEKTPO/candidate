@@ -53,41 +53,84 @@ document.addEventListener('DOMContentLoaded', function () {
 */
 
 document.addEventListener('DOMContentLoaded', function () {
-    var deleteLink = document.getElementById('deleteLink');
-    var detailsModal = deleteLink.querySelector('.details-modal');
-    var confirmationText = deleteLink.querySelector('#confirmationText');
-    var yesButton = deleteLink.querySelector('.yes');
-    var noButton = deleteLink.querySelector('.no');
+    var detailsModal = document.querySelector('.details-modal');
+    var confirmationText = document.querySelector('#confirmationText');
+    var yesButton = document.querySelector('.yes');
+    var noButton = document.querySelector('.no');
+    var deleteLink = document.querySelector('#deleteLink');
 
-    deleteLink.addEventListener('click', function (event) {
+    detailsModal.addEventListener('click', function (event) {
         event.preventDefault();
 
-        var radioButtons = document.getElementsByName('selectedCandidate');
-        var selectedCandidateId = null;
+        var deleteLink = event.target.closest('.css-modal-details');
 
-        for (var i = 0; i < radioButtons.length; i++) {
-            if (radioButtons[i].checked) {
-                selectedCandidateId = radioButtons[i].value;
-                break;
+        if (deleteLink) {
+            var radioButtons = document.getElementsByName('selectedCandidate');
+            var selectedCandidateId = null;
+
+            for (var i = 0; i < radioButtons.length; i++) {
+                if (radioButtons[i].checked) {
+                    selectedCandidateId = radioButtons[i].value;
+                    break;
+                }
             }
-        }
 
-        if (selectedCandidateId !== null) {
-            confirmationText.textContent = `Вы действительно хотите удалить кандидата с ID = ${selectedCandidateId} ?`;
+            if (selectedCandidateId !== null) {
+                confirmationText.textContent = `Вы действительно хотите удалить кандидата с ID = ${selectedCandidateId} ?`;
 
-            detailsModal.setAttribute('open', 'open');
+                detailsModal.setAttribute('open', 'open');
 
-            var deleteURL = '/delete-personal-card/' + selectedCandidateId;
-            yesButton.addEventListener('click', function () {
-                window.location.href = deleteURL;
-            });
+                var deleteURL = '/delete-personal-card/' + selectedCandidateId;
+                yesButton.addEventListener('click', function (event) {
+                    event.stopPropagation(); // Предотвращаем всплытие события
+                    window.location.href = deleteURL;
+                });
 
-            noButton.addEventListener('click', function () {
-                detailsModal.removeAttribute('open');
-                window.location.href = '/';
-            });
-        } else {
-            alert('Выберите кандидата для удаления.');
+                noButton.addEventListener('click', function (event) {
+                    event.stopPropagation(); // Предотвращаем всплытие события
+                    detailsModal.removeAttribute('open');
+                    window.location.href = '/';
+                });
+            } else {
+                alert('Выберите кандидата для удаления.');
+            }
         }
     });
 });
+
+/*
+function openModal() {
+  var radioButtons = document.getElementsByName('selectedCandidate');
+              var selectedCandidateId = null;
+
+              for (var i = 0; i < radioButtons.length; i++) {
+                  if (radioButtons[i].checked) {
+                      selectedCandidateId = radioButtons[i].value;
+                      break;
+                  }
+              }
+  if (selectedCandidateId !== null) {
+    document.getElementById('message').innerHTML = "Вы действительно хотите удалить кандидата с ID = " + selectedCandidateId;
+    document.getElementById('modal').style.display = "";
+  }
+  else {
+     alert('Выберите кандидата для удаления.');
+  }
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = "none";
+}
+
+function confirmDelete() {
+  var radioButtons = document.getElementsByName('selectedCandidate');
+                var selectedCandidateId = null;
+
+                for (var i = 0; i < radioButtons.length; i++) {
+                    if (radioButtons[i].checked) {
+                        selectedCandidateId = radioButtons[i].value;
+                        break;
+                    }
+                }
+  window.location.href = '/delete-personal-card/' + selectedCandidateId;
+}*/

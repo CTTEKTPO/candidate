@@ -11,7 +11,7 @@
     background-color: rgba(0, 0, 0, 0.7);
     opacity: 0;
     position: fixed; /* фиксированное поцизионирование */
-    cursor: default; /* тип курсара */
+    cursor: default; /* тип курсора */
 }
 .overlay:target {
     visibility: visible;
@@ -96,4 +96,5 @@
     margin: 0;
     padding: 10px;
 }
+
 

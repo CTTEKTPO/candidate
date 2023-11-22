@@ -5,6 +5,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
@@ -83,7 +85,7 @@ public class PersonalCard {
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creation_date")
-    private Date creationDate;
+    private String creationDate;
 
 
 
@@ -186,6 +188,23 @@ public class PersonalCard {
 //    public void setImagesBytes(byte[] imagesBytes) {
 //        this.imagesBytes = imagesBytes;
 //    }
+
+
+    public String getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(String creationDate) {
+        try {
+            if (creationDate != null && !creationDate.isEmpty()) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date parsedDate = dateFormat.parse(creationDate);
+                this.creationDate = dateFormat.format(parsedDate);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
 
     public String getSex() {
         return sex;
