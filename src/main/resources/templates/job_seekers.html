@@ -122,6 +122,7 @@
                 <th>Комментарии</th>
                 <th>Статус</th>
             </tr>
+            <tbody id="tableBody">
             <tr th:each="personalCard : ${personalCards}">
                 <th><input type="radio" name="selectedCandidate" th:value="${personalCard.id}" ></th>
                 <td th:text="${personalCard?.id}?: ''"></td>
@@ -139,6 +140,7 @@
                 <td th:text="${personalCard?.comments} ?: ''"></td>
                 <td th:text="${personalCard.status?.field} ?: ''"></td>
             </tr>
+            </tbody>
         </table>
         </div>
         </form>

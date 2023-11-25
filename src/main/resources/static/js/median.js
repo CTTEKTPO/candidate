@@ -1,27 +1,46 @@
 document.addEventListener('DOMContentLoaded', function () {
-
     var jobTitles = /*[[${jobTitles}]]*/ [];
     var personalCards = /*[[${personalCards}]]*/ [];
+    console.log("Job Titles in JS: ", jobTitles);
+    console.log("Personal Cards in JS: ", personalCards);
 
     document.getElementById('medianButton').addEventListener('click', function () {
         buildMedianChart(jobTitles, personalCards);
     });
 
     function buildMedianChart(jobTitles, personalCards) {
+        var selectedJobTitleId = document.getElementById('jobTitle').value;
+        var datGeBefore = document.getElementById('dateBefore').value;
+        var dateAfter = document.getElementById('dateAfter').value;
 
+
+        console.log("Job Titles: ", jobTitles);
+        console.log("Personal Cards: ", personalCards);
+        // Фильтрация карточек по выбранной должности и периоду
+        var filteredCards = personalCards.filter(function(card) {
+            return card.jobTitle.id === selectedJobTitleId &&
+                   card.creationDate >= dateBefore &&
+                   card.creationDate <= dateAfter;
+        });
+        console.log("Filtered Cards: ", filteredCards);
+        // Группировка данных по зарплатам
         var groupedData = {};
-        personalCards.forEach(function (card) {
-            if (!groupedData[card.jobTitle.title]) {
-                groupedData[card.jobTitle.title] = [];
+        filteredCards.forEach(function(card) {
+            if (!groupedData[card.salary]) {
+                groupedData[card.salary] = [];
             }
-            groupedData[card.jobTitle.title].push(card.salary);
+            groupedData[card.salary].push(card);
         });
 
+        // Вычисление медианы для каждой зарплаты
         var medianData = {};
-        Object.keys(groupedData).forEach(function (title) {
-            medianData[title] = calculateMedian(groupedData[title]);
+        Object.keys(groupedData).forEach(function(salary) {
+            medianData[salary] = calculateMedian(groupedData[salary].map(function(card) {
+                return card.salary;
+            }));
         });
 
+        // Построение графика
         var ctx = document.getElementById('medianChart').getContext('2d');
         var chart = new Chart(ctx, {
             type: 'bar',
@@ -44,19 +63,17 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
+        // Функция вычисления медианы
         function calculateMedian(values) {
-            values.sort(function (a, b) {
-                return moment(a, 'YYYY-MM-DD HH:mm:ss') - moment(b, 'YYYY-MM-DD HH:mm:ss');
+        console.log("Sorted Values: ", values);
+            values.sort(function(a, b) {
+                return a - b;
             });
-
             var half = Math.floor(values.length / 2);
-
             if (values.length % 2 === 0) {
-                var date1 = moment(values[half - 1], 'YYYY-MM-DD HH:mm:ss');
-                var date2 = moment(values[half], 'YYYY-MM-DD HH:mm:ss');
-                return moment.duration(date2.diff(date1)).asSeconds() / 2.0;
+                return (values[half - 1] + values[half]) / 2.0;
             } else {
-                return moment(values[half], 'YYYY-MM-DD HH:mm:ss').toDate();
+                return values[half];
             }
         }
     }
