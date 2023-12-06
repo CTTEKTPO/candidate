@@ -7,7 +7,7 @@
     <title>Candidates.RecruitRight</title>
     <link th:href="@{/css/job_seekers.css}" rel="stylesheet">
     <link th:href="@{/css/style-modal.css}" rel="stylesheet">
-<!--    <link th:href="@{/css/delete.css}" rel="stylesheet">-->
+    <link th:href="@{/css/delete.css}" rel="stylesheet">
 <!--    <link th:href="@{/css/fordelete.css}" rel="stylesheet">-->
 </head>
 <body>
@@ -51,36 +51,40 @@
     <main>
 
         <div class="group-img">
+
             <a href="/newCandidate"><img src="img/newdoc.svg" class="img"></a>
+
             <a id="editLink" href="#">
                 <img id="editImage" src="img/edit.svg" class="img">
             </a>
-            <a href="#deleteLink">
-            <img src="img/delete.svg" style="width: 45px; margin-left: -10px">
-            </a>
-            <a href="/median"><img src="img/chart.svg " class="img"></a>
-            <a id="deleteLink" class="css-modal-details">
-                <details class="details-modal">
-                    <div class="cmc">
-                        <div class="cmt">
-                            <p id="confirmationText"></p>
-                            <button class="yes" id ="yes">Да</button>
-                            <button class="no" id ="no">Нет</button>
-                        </div>
+
+            <img src="img/delete.svg" class="img-delete" onclick="openModal()" style="width: 45px; margin-left: -10px"></a>
+            <div id="myModal" class="modal-delete">
+                <div class="modal-content-delete">
+                    <div>
+                        <span class="modal-close-delete" onclick="closeModal()">&times;</span>
+                        <p id="confirmationText"></p>
+                        <button class="confirm-button-yes" onclick="deleteRecord()">Да</button>
+                        <button class="confirm-button-no" onclick="closeModal()">Нет</button>
                     </div>
-                </details>
-            </a>
 
+                </div>
+            </div>
 
+            <a href="/median"><img src="img/chart.svg " class="img"></a>
         </div>
 
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <button class="group-btn"><a href="/">Соискатели</a></button>
+            <!-- <button class="group-btn"><a href="job_openings.html">Вакансии</a></button> -->
+        </div>
 
         <p class="filt-desc" style="margin-bottom: 10px;">Фильтры</p>
         <div class="btn-filter">
             <button onclick="updateTable()">Обновить таблицу соискателей</button>
             <button onclick="addFilter()">Добавить фильтр</button>
-            <button onclick="removeFilter()">Удалить фильтр</button>
-            <button onclick="removeAllFilters()">Удалить все</button>
+            <button id="removeFilterBtn" onclick="removeFilter()">Удалить фильтр</button>
+            <button id="removeAllFiltersBtn" onclick="removeAllFilters()">Удалить все</button>
         </div>
         <div class="table-filter-container">
         <table class="filter" id="filterTable">
@@ -98,10 +102,7 @@
             </tbody>
         </table>
         </div>
-        <div style="margin-top: 10px; margin-bottom: 10px;">
-            <button class="group-btn"><a href="/">Соискатели</a></button>
-            <!-- <button class="group-btn"><a href="job_openings.html">Вакансии</a></button> -->
-        </div>
+        <p class="filt-desc" style="margin-bottom: 10px;">Соискатели</p>
         <form>
         <div class="table-container">
         <table>

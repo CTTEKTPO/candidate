@@ -5,10 +5,11 @@ import org.springframework.ui.Model;
 import com.example.candidate.model.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
-import java.util.Map;
+import java.sql.Date;
+import java.time.Instant;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -18,19 +19,18 @@ public class MainController {
     private final PersonalCardService personalCardService;
     private final JobTitleService jobTitleService;
     private final StatusService statusService;
-    private final FilterService filterService;
+
 
 
     public MainController(
             CityService cityService,
             PersonalCardService personalCardService,
             JobTitleService jobTitleService,
-            StatusService statusService, FilterService filterService) {
+            StatusService statusService) {
         this.cityService = cityService;
         this.personalCardService = personalCardService;
         this.jobTitleService = jobTitleService;
         this.statusService = statusService;
-        this.filterService = filterService;
     }
 
         @GetMapping("/")
@@ -45,59 +45,31 @@ public class MainController {
             Model model) {
 
         List<PersonalCard> personalCards = personalCardService.getAll();
-
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-
-            switch (key) {
-                case "fullName":
-                    personalCards = personalCardService.getByFullName(value);
-                    break;
-                case "dateOfBirth":
-                    personalCards = personalCardService.getByDateOfBirth(value);
-                    break;
-                case "age":
-                    personalCards = personalCardService.getByAge(Integer.parseInt(value));
-                    break;
-                case "sex":
-                    personalCards = personalCardService.getBySex(value);
-                    break;
-                case "city":
-                    personalCards = personalCardService.getByCity(value);
-                    break;
-                case "phone":
-                    personalCards = personalCardService.getByPhone(value);
-                    break;
-                case "jobTitle":
-                    personalCards = personalCardService.getByJobTitle(value);
-                    break;
-                case "salary":
-                    personalCards = personalCardService.getBySalary(Integer.parseInt(value));
-                    break;
-                case "experience":
-                    personalCards = personalCardService.getByExperience(value);
-                    break;
-                case "education":
-                    personalCards = personalCardService.getByEducation(value);
-                    break;
-                case "skills":
-                    personalCards = personalCardService.getBySkills(value);
-                    break;
-                case "comments":
-                    personalCards = personalCardService.getByComments(value);
-                    break;
-                case "status":
-                    personalCards = personalCardService.getByStatus(value);
-                    break;
-            }
+        // Если параметры отсутствуют, вернуть весь список
+        if (params.isEmpty()) {
+            model.addAttribute("personalCards", personalCards);
+            return "job_seekers";
         }
 
-        model.addAttribute("personalCards", personalCards);
+        Filter filter = new Filter();
+
+        Set<PersonalCard> uniquePersonalCards = new HashSet<>(personalCards);
+
+        Map<String, String> NewParams = params.entrySet().stream()
+                .collect(Collectors.toMap(
+                        entry -> Filter.FieldMapper.mapField(entry.getKey()),
+                        Map.Entry::getValue
+                ));
+
+        List<PersonalCard> filteredPersonalCards = filter.filter(new ArrayList<>(uniquePersonalCards), NewParams);
+
+
+        model.addAttribute("personalCards", filteredPersonalCards);
         return "job_seekers";
     }
 
-        @GetMapping("/newCandidate")
+
+    @GetMapping("/newCandidate")
         public String showAddPersonalCardForm(Model model) {
             List<City> cities = cityService.getAll();
             List<JobTitle> jobTitles = jobTitleService.getAll();
@@ -144,28 +116,14 @@ public class MainController {
             personalCardService.deleteById(id);
             return "redirect:/";
         }
-    /*
-        @GetMapping("/median")
-        public String showMedianPage(Model model){
-            List<PersonalCard> personalCards = personalCardService.getAll();
-            List<JobTitle> jobTitles = jobTitleService.getAll();
-            System.out.println("Personal Cards: " + personalCards);
-            System.out.println("Job Titles: " + jobTitles);
-            model.addAttribute("personalCards", personalCards);
-            model.addAttribute("jobTitles", jobTitles);
-            return "median";
-        }*/
+
     @GetMapping("/median")
-    public ModelAndView showMedianPage(Model model) {
+    public String showMedianPage(Model model) {
         List<PersonalCard> personalCards = personalCardService.getAll();
         List<JobTitle> jobTitles = jobTitleService.getAll();
-        System.out.println("Personal Cards: " + personalCards);
-        System.out.println("Job Titles: " + jobTitles);
-
-        ModelAndView modelAndView = new ModelAndView("median");
-        modelAndView.addObject("personalCards", personalCards);
-        modelAndView.addObject("jobTitles", jobTitles);
-        return modelAndView;
+        model.addAttribute("personalCards", personalCards);
+        model.addAttribute("jobTitles", jobTitles);
+        return "median";
     }
 
 }
