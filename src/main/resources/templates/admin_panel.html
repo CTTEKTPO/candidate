@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:margin="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidates.RecruitRight</title>
+    <link href="css/admin_panel.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="header-flex">
+            <!-- <a href="">Файл</a> -->
+            <div id="openModal" class="modal">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <a href="#win2" class="modal-title"><h3 style="width: 140px;">О программе</h3></a>
+                      <a href="#close" title="Close" class="close">×</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+               
+              <!-- HTML кнопки -->
+               
+            <a href="#openModal" class="reference">Справка</a>
+
+            <a href="#" class="overlay" id="win2"></a>
+            <div class="popup">
+                <div class="flex-popup">
+                    <img src="img/person.svg" width="130px" class="img-popup">
+                    <div class="person-desc">
+                        <p>RecruitRight</p>
+                        <p>@Megasoft</p>
+                        <p>Хромченков А.П. все права защищены</p>
+                        <p>Email для связи c разработчиком:</p>
+                        <p>cttektpo98@gmail.com</p>
+                    </div>
+
+                </div>
+    
+                    
+                <a class="close-Popup" title="Закрыть" href="#close"></a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <!-- Модальное окно для добавления/редактирования таблиц -->
+        <div id="universalModal" class="modal-tables">
+            <div class="modal-content-tables">
+                <span class="modal-close-tables" onclick="closeUniversalModal()">&times;</span>
+                <h3 id="modalTitle"></h3>
+                <input id="modalInput" type="text"  placeholder="Введите значение">
+                <button id="submitBtn">Сохранить</button>
+                <button onclick="closeUniversalModal()">Отмена</button>
+            </div>
+        </div>
+
+        <!-- Модальное окно для подтверждения удаления данных из таблицы -->
+        <div id="deleteUniversalModal" class="modal-tables">
+            <div class="modal-content-tables">
+                <span class="modal-close-tables" onclick="closeUniversalDeleteModal()">&times;</span>
+                <h3>Подтвердите удаление</h3>
+                <p id="deleteText"></p>
+                <button id="submitDeleteBtn" class="confirm-button-yes">Да</button>
+                <button class="confirm-button-no" onclick="closeDelete()">Нет</button>
+            </div>
+        </div>
+
+
+
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <button class="group-btn"><a href="/">Соискатели</a></button>
+        </div>
+
+
+
+        <form>
+        <div class="tables">
+        <div class="table-container">
+            <div class="filt-desc-container">
+                <p class="filt-desc">Города</p>
+                <a onclick="openAddUniversalModal('Добавить город', 'city')"><img src="img/add.svg" class="img"></a>
+            </div>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Город</th>
+                <th></th>
+            </tr>
+            <tbody>
+            <tr th:each="city : ${city}">
+                <td th:text="${city.id}"></td>
+                <td th:text="${city.name}"></td>
+                <td>
+                    <a onclick="openEditUniversalModal('Редактировать город', 'city', '${city.id}', '${city.name}')">Edit</a>
+                    <a onclick="openDeleteUniversalModal('город ' + '${city.name}', 'city', '${city.id}')">Delete</a>
+                    <!-- <a onclick="openDeleteUniversalModal('${city.name}', '${city.id}')">Delete</a> -->
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+        
+            <div class="table-container">
+                <div class="filt-desc-container">
+                    <p class="filt-desc">Должности</p>
+                    <a onclick="openAddUniversalModal('Добавить должность', 'jobTitle')"><img src="img/add.svg" class="img"></a>
+                </div>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Должность</th>
+                    <th></th>
+                </tr>
+                <tbody>
+                <tr th:each="jobTitle : ${jobTitle}">
+                    <td th:text="${jobTitle.id}"></td>
+                    <td th:text="${jobTitle.title}"></td>
+                    <td>
+                        <!-- <a th:href="@{'/jobTitle/edit/' + ${jobTitle.id}}">Edit</a>
+                        <a th:href="@{'/jobTitle/delete/' + ${jobTitle.id}}">Delete</a> -->
+                        <a onclick="openEditUniversalModal('Редактировать должность', 'jobTitle', '${jobTitle.id}', '${jobTitle.title}')">Edit</a>
+                        <a onclick="openDeleteUniversalModal('должность ' + '${jobTitle.title}', 'jobTitle', '${jobTitle.id}')">Delete</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            </div>
+            
+            <div class="table-container">
+                <div class="filt-desc-container">
+                    <p class="filt-desc">Статусы</p>
+                    <a onclick="openAddUniversalModal('Добавить статус', 'status')"><img src="img/add.svg" class="img"></a>
+                </div>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Статус</th>
+                    <th></th>
+                </tr>
+                <tbody>
+                <tr th:each="status : ${status}">
+                    <td th:text="${status.id}"></td>
+                    <td th:text="${status.field}"></td>
+                    <td>
+                        <!-- <a th:href="@{'/status/edit/' + ${status.id}}">Edit</a>
+                        <a th:href="@{'/status/delete/' + ${status.id}}">Delete</a> -->
+                        <a onclick="openEditUniversalModal('Редактировать статус', 'status', '${status.id}', '${status.field}')">Edit</a>
+                        <a onclick="openDeleteUniversalModal('статус ' + '${status.field}', 'status', '${status.id}')">Delete</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            </div>
+            
+            <div class="table-container">
+                <div class="filt-desc-container">
+                    <p class="filt-desc">Пользователи</p>
+                    <a><img src="img/add.svg" class="img"></a>
+                </div>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Пользователь</th>
+                    <th>Активирован</th>
+                    <th></th>
+                </tr>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: center;">
+                        <input id="user_activated" type="checkbox" style="width: 15px; height: 15px;"></td>
+                    <td>
+                        <a>Edit</a>
+                        <a>Delete</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+        </form>
+
+    </main>
+    <script th:src="@{/js/admin_tables.js}"></script>
+</body>
+</html>

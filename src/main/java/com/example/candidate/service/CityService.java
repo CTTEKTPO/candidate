@@ -1,6 +1,7 @@
 package com.example.candidate.service;
 
 import com.example.candidate.model.City;
+import com.example.candidate.model.PersonalCard;
 import com.example.candidate.model.Status;
 import com.example.candidate.repository.CityRepository;
 import org.springframework.stereotype.Service;
@@ -27,13 +28,21 @@ public class CityService {
         return optionalCity.orElse(null);
     }
 
-    public boolean saveOrUpdate(City item) {
-        City updated = repo.save(item);
-
-        return repo.findById(updated.getId()).isPresent();
+    public void saveOrUpdate(City city) {
+        if (city.getId() == null) {
+            // Если id отсутствует, значит, это новая запись
+            repo.save(city);
+        } else {
+            Optional<City> optionalCity = repo.findById(city.getId());
+            if (optionalCity.isPresent()) {
+                City existingCity = optionalCity.get();
+                existingCity.setName(city.getName());
+                repo.save(city);
+            }
+        }
     }
 
-    /*public boolean deleteById(Long id) {
+    public boolean deleteById(Long id) {
         try {
             repo.deleteById(id);
         } catch (Exception e) {
@@ -41,7 +50,7 @@ public class CityService {
         }
 
         return repo.findById(id).isEmpty();
-    }*/
+    }
 
     /*public void addNewCity(City city){
         Optional<City> cityOptional = repo.findCityByName(city.getName());

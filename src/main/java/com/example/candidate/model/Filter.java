@@ -25,7 +25,7 @@ public class Filter {
             predicates.add(createPredicate(key, value, operator));
         }
 
-        // Объединяем предикаты с помощью логического И
+        // Объединяем предикаты с помощью логического ИЛИ
         Predicate<PersonalCard> combinedPredicate = predicates.stream().reduce(x -> false, Predicate::or);
 
         // Применяем фильтр

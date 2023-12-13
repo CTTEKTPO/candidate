@@ -1,6 +1,7 @@
 package com.example.candidate.service;
 
 
+import com.example.candidate.model.JobTitle;
 import com.example.candidate.model.Status;
 import com.example.candidate.repository.StatusRepository;
 import org.springframework.stereotype.Service;
@@ -26,10 +27,28 @@ public class StatusService {
         return optionalStatus.orElse(null);
     }
 
-    public boolean saveOrUpdate(Status item) {
-        Status updated = repo.save(item);
+    public void saveOrUpdate(Status status) {
+        if (status.getId() == null) {
+            // Если id отсутствует, значит, это новая запись
+            repo.save(status);
+        } else {
+            Optional<Status> optionalStatus = repo.findById(status.getId());
+            if (optionalStatus.isPresent()) {
+                Status existingStatus = optionalStatus.get();
+                existingStatus.setField(status.getField());
+                repo.save(status);
+            }
+        }
+    }
 
-        return repo.findById(updated.getId()).isPresent();
+    public boolean deleteById(Long id) {
+        try {
+            repo.deleteById(id);
+        } catch (Exception e) {
+            // needless
+        }
+
+        return repo.findById(id).isEmpty();
     }
 
 }

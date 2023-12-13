@@ -18,9 +18,11 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log("Personal Cards: ", personalCards);
         // Фильтрация карточек по выбранной должности и периоду
         var filteredCards = personalCards.filter(function(card) {
+            if (card.jobTitle.id != null){
             return card.jobTitle.id == selectedJobTitleId &&
                    card.creationDate >= dateBefore &&
                    card.creationDate <= dateAfter;
+            }
         });
         console.log("Filtered Cards: ", filteredCards);
 

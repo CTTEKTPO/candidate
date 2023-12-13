@@ -1,5 +1,6 @@
 package com.example.candidate.service;
 
+import com.example.candidate.model.City;
 import com.example.candidate.model.JobTitle;
 import com.example.candidate.repository.JobTitleRepository;
 import org.springframework.stereotype.Service;
@@ -25,9 +26,27 @@ public class JobTitleService {
         return optionalJobTitle.orElse(null);
     }
 
-    public boolean saveOrUpdate(JobTitle item) {
-        JobTitle updated = repo.save(item);
+    public void saveOrUpdate(JobTitle jobTitle) {
+        if (jobTitle.getId() == null) {
+            // Если id отсутствует, значит, это новая запись
+            repo.save(jobTitle);
+        } else {
+            Optional<JobTitle> optionalJobTitle = repo.findById(jobTitle.getId());
+            if (optionalJobTitle.isPresent()) {
+                JobTitle existingJobTitle = optionalJobTitle.get();
+                existingJobTitle.setTitle(jobTitle.getTitle());
+                repo.save(jobTitle);
+            }
+        }
+    }
 
-        return repo.findById(updated.getId()).isPresent();
+    public boolean deleteById(Long id) {
+        try {
+            repo.deleteById(id);
+        } catch (Exception e) {
+            // needless
+        }
+
+        return repo.findById(id).isEmpty();
     }
 }

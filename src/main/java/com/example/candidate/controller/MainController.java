@@ -75,7 +75,7 @@ public class MainController {
             List<JobTitle> jobTitles = jobTitleService.getAll();
             List<Status> statuses = statusService.getAll();
 
-            model.addAttribute("pageTitle", "Add New User");
+            model.addAttribute("pageTitle", "Add New Candidate");
             model.addAttribute("personalCard", new PersonalCard());
             model.addAttribute("city", cities);
             model.addAttribute("jobTitle", jobTitles);
@@ -124,6 +124,50 @@ public class MainController {
         model.addAttribute("personalCards", personalCards);
         model.addAttribute("jobTitles", jobTitles);
         return "median";
+    }
+
+    @GetMapping("/admin_panel")
+    public String getAdminPanel(Model model) {
+        List<City> cities = cityService.getAll();
+        List<JobTitle> jobTitles = jobTitleService.getAll();
+        List<Status> statuses = statusService.getAll();
+        model.addAttribute("city", cities);
+        model.addAttribute("jobTitle", jobTitles);
+        model.addAttribute("status", statuses);
+
+
+        return "admin_panel";
+    }
+    @PostMapping("/save/city")
+    public String addCity(City city){
+        cityService.saveOrUpdate(city);
+        return "redirect:/admin_panel";
+    }
+    @PostMapping("/save/jobTitle")
+    public String addJobTitle(JobTitle jobTitle){
+        jobTitleService.saveOrUpdate(jobTitle);
+        return "redirect:/admin_panel";
+    }
+    @PostMapping("/save/status")
+    public String addStatus(Status status){
+        statusService.saveOrUpdate(status);
+        return "redirect:/admin_panel";
+    }
+
+    @GetMapping("/delete/city/{id}")
+    public String deleteCity(@PathVariable("id") Long id) {
+        cityService.deleteById(id);
+        return "redirect:/admin_panel";
+    }
+    @GetMapping("/delete/jobTitle/{id}")
+    public String deleteJobTitle(@PathVariable("id") Long id) {
+        jobTitleService.deleteById(id);
+        return "redirect:/admin_panel";
+    }
+    @GetMapping("/delete/status/{id}")
+    public String deleteStatus(@PathVariable("id") Long id) {
+        statusService.deleteById(id);
+        return "redirect:/admin_panel";
     }
 
 }
