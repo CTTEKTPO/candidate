@@ -76,7 +76,7 @@
 
         <div style="margin-top: 10px; margin-bottom: 10px;">
             <button class="group-btn"><a href="/">Соискатели</a></button>
-            <button class="group-btn"><a href="/admin_panel">Административная панель</a></button>
+<!--            <button th:if="${#request.isUserInRole('full')}" class="group-btn"><a href="/admin_panel">Административная панель</a></button>-->
         </div>
 
         <p class="filt-desc" style="margin-bottom: 10px;">Фильтры</p>

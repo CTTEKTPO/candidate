@@ -1,8 +1,6 @@
 package com.example.candidate.service;
 
 import com.example.candidate.model.City;
-import com.example.candidate.model.PersonalCard;
-import com.example.candidate.model.Status;
 import com.example.candidate.repository.CityRepository;
 import org.springframework.stereotype.Service;
 

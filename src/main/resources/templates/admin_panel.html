@@ -69,7 +69,34 @@
             </div>
         </div>
 
-
+        <!-- Модальное окно для добавления/редактирования таблиц с пользователями -->
+        <div id="universalModalUsers" class="modal-tables">
+            <div class="modal-content-tables">
+                <span class="modal-close-tables" onclick="closeUniversalModalUser()">&times;</span>
+                <h3 id="modalTitleUsers"></h3>
+                <div class="user_form">
+                    <label id="loginUserLabel"></label>
+                    <input id="modalInputLoginUser" type="text"  placeholder="Введите логин пользователя" class="user_field">
+                </div>
+                <div class="user_form">
+                    <label id="passwordUserLabel"></label>
+                    <input id="modalInputPasswordUser" type="password" placeholder="Введите новый пароль" class="user_field">
+                </div>
+                <div class="user_form">
+                    <label id="accessUserLabel"></label>
+                    <select id="modalInputAccessUser" style="font-size: 15px;" class="user_field" >
+                        <option id="limited" value="Ограниченный">Ограниченный</option>
+                        <option id="full" value="Полный">Полный</option>
+                    </select>
+                </div>
+                <div class="user_form">
+                    <label id="nameUserLabel"></label>
+                    <input id="modalInputNameUser" type="text"  placeholder="Введите ФИО пользователя" class="user_field">
+                </div>
+                <button id="submitBtnUsers">Сохранить</button>
+                <button onclick="closeUniversalModalUser()">Отмена</button>
+            </div>
+        </div>
 
         <div style="margin-top: 10px; margin-bottom: 10px;">
             <button class="group-btn"><a href="/">Соискатели</a></button>
@@ -77,7 +104,7 @@
 
 
 
-        <form>
+        <form enctype="multipart/form-data">
         <div class="tables">
         <div class="table-container">
             <div class="filt-desc-container">
@@ -95,9 +122,8 @@
                 <td th:text="${city.id}"></td>
                 <td th:text="${city.name}"></td>
                 <td>
-                    <a onclick="openEditUniversalModal('Редактировать город', 'city', '${city.id}', '${city.name}')">Edit</a>
-                    <a onclick="openDeleteUniversalModal('город ' + '${city.name}', 'city', '${city.id}')">Delete</a>
-                    <!-- <a onclick="openDeleteUniversalModal('${city.name}', '${city.id}')">Delete</a> -->
+                    <a th:attr="onclick=|openEditUniversalModal('Редактировать город', 'city', '${city.id}', '${city.name}')|">Edit</a>
+                    <a th:attr="onclick=|openDeleteUniversalModal('город ' + '${city.name}', 'city', '${city.id}')|">Delete</a>
                 </td>
             </tr>
             </tbody>
@@ -120,10 +146,8 @@
                     <td th:text="${jobTitle.id}"></td>
                     <td th:text="${jobTitle.title}"></td>
                     <td>
-                        <!-- <a th:href="@{'/jobTitle/edit/' + ${jobTitle.id}}">Edit</a>
-                        <a th:href="@{'/jobTitle/delete/' + ${jobTitle.id}}">Delete</a> -->
-                        <a onclick="openEditUniversalModal('Редактировать должность', 'jobTitle', '${jobTitle.id}', '${jobTitle.title}')">Edit</a>
-                        <a onclick="openDeleteUniversalModal('должность ' + '${jobTitle.title}', 'jobTitle', '${jobTitle.id}')">Delete</a>
+                        <a th:attr="onclick=|openEditUniversalModal('Редактировать должность', 'jobTitle', '${jobTitle.id}', '${jobTitle.title}')|">Edit</a>
+                        <a th:attr="onclick=|openDeleteUniversalModal('должность ' + '${jobTitle.title}', 'jobTitle', '${jobTitle.id}')|">Delete</a>
                     </td>
                 </tr>
                 </tbody>
@@ -146,10 +170,8 @@
                     <td th:text="${status.id}"></td>
                     <td th:text="${status.field}"></td>
                     <td>
-                        <!-- <a th:href="@{'/status/edit/' + ${status.id}}">Edit</a>
-                        <a th:href="@{'/status/delete/' + ${status.id}}">Delete</a> -->
-                        <a onclick="openEditUniversalModal('Редактировать статус', 'status', '${status.id}', '${status.field}')">Edit</a>
-                        <a onclick="openDeleteUniversalModal('статус ' + '${status.field}', 'status', '${status.id}')">Delete</a>
+                        <a th:attr="onclick=|openEditUniversalModal('Редактировать статус', 'status', '${status.id}', '${status.field}')|">Edit</a>
+                        <a th:attr="onclick=|openDeleteUniversalModal('статус ' + '${status.field}', 'status', '${status.id}')|">Delete</a>
                     </td>
                 </tr>
                 </tbody>
@@ -159,24 +181,29 @@
             <div class="table-container">
                 <div class="filt-desc-container">
                     <p class="filt-desc">Пользователи</p>
-                    <a><img src="img/add.svg" class="img"></a>
+                    <a onclick="openAddUser()" ><img src="img/add.svg" class="img"></a>
                 </div>
             <table>
                 <tr>
                     <th>ID</th>
                     <th>Пользователь</th>
                     <th>Активирован</th>
+                    <th>Доступ</th>
+                    <th>ФИО сотрудника</th>
                     <th></th>
                 </tr>
                 <tbody>
-                <tr>
-                    <td></td>
-                    <td></td>
+                <tr th:each="user : ${user}">
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.username}"></td>
                     <td style="text-align: center;">
-                        <input id="user_activated" type="checkbox" style="width: 15px; height: 15px;"></td>
+                        <input id="user_activated" type="checkbox" style="width: 15px; height: 15px;">
+                    </td>
+                    <td th:text="${user.authority}"></td>
+                    <td th:text="${user.employeeName}"></td>
                     <td>
-                        <a>Edit</a>
-                        <a>Delete</a>
+                        <a th:attr="onclick=|openEditUser('${user.id}', '${user.username}', '${user.authority}', '${user.employeeName}')|">Edit</a>
+                        <a th:attr="onclick=|openDeleteUniversalModal('пользователя ' + '${user.username}', 'user', '${user.id}')|">Delete</a>
                     </td>
                 </tr>
                 </tbody>

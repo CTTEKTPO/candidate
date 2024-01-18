@@ -6,8 +6,6 @@ import com.example.candidate.model.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,6 +17,7 @@ public class MainController {
     private final PersonalCardService personalCardService;
     private final JobTitleService jobTitleService;
     private final StatusService statusService;
+    private final UserService userService;
 
 
 
@@ -26,11 +25,12 @@ public class MainController {
             CityService cityService,
             PersonalCardService personalCardService,
             JobTitleService jobTitleService,
-            StatusService statusService) {
+            StatusService statusService, UserService userService) {
         this.cityService = cityService;
         this.personalCardService = personalCardService;
         this.jobTitleService = jobTitleService;
         this.statusService = statusService;
+        this.userService = userService;
     }
 
         @GetMapping("/")
@@ -39,6 +39,10 @@ public class MainController {
             model.addAttribute("personalCards", personalCards);
             return "job_seekers";
         }
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
     @GetMapping("/filteredPersonalCards")
     public String getFilteredPersonalCards(
             @RequestParam Map<String, String> params,
@@ -128,17 +132,21 @@ public class MainController {
 
     @GetMapping("/admin_panel")
     public String getAdminPanel(Model model) {
+
+
         List<City> cities = cityService.getAll();
         List<JobTitle> jobTitles = jobTitleService.getAll();
         List<Status> statuses = statusService.getAll();
+        List<User> users = userService.getAll();
         model.addAttribute("city", cities);
         model.addAttribute("jobTitle", jobTitles);
         model.addAttribute("status", statuses);
+        model.addAttribute("user", users);
 
 
         return "admin_panel";
     }
-    @PostMapping("/save/city")
+    @PostMapping(value = "/save/city", consumes = "multipart/form-data")
     public String addCity(City city){
         cityService.saveOrUpdate(city);
         return "redirect:/admin_panel";
@@ -151,6 +159,11 @@ public class MainController {
     @PostMapping("/save/status")
     public String addStatus(Status status){
         statusService.saveOrUpdate(status);
+        return "redirect:/admin_panel";
+    }
+    @PostMapping("/save/user")
+    public String addUser(User user){
+        userService.saveOrUpdate(user);
         return "redirect:/admin_panel";
     }
 
@@ -167,6 +180,11 @@ public class MainController {
     @GetMapping("/delete/status/{id}")
     public String deleteStatus(@PathVariable("id") Long id) {
         statusService.deleteById(id);
+        return "redirect:/admin_panel";
+    }
+    @GetMapping("/delete/user/{id}")
+    public String deleteUser(@PathVariable("id") Long id) {
+        userService.deleteById(id);
         return "redirect:/admin_panel";
     }
 

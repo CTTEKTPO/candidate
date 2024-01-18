@@ -3,7 +3,6 @@ package com.example.candidate.model;
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -73,7 +72,7 @@ public class Filter {
     }
 
     private boolean compareString(String actual, String target, String operator) {
-        if (actual == null) return false;
+        if (actual == null || target == null) return false;
         actual = actual.toLowerCase();
         target = target.toLowerCase();
         switch (operator) {
@@ -87,7 +86,7 @@ public class Filter {
     }
 
     private boolean compareInteger(Integer actual, Integer target, String operator) {
-        if (actual == null) return false;
+        if (actual == null || target == null) return false;
         switch (operator) {
             case "=":
                 return actual.equals(target);
@@ -101,7 +100,7 @@ public class Filter {
     }
 
     private boolean compareDate(Date actual, String target, String operator) {
-        if (actual == null) return false;
+        if (actual == null || target == null) return false;
         try {
             SimpleDateFormat sdfUserInput = new SimpleDateFormat("dd.MM.yyyy");
             Date targetDate = sdfUserInput.parse(target);
@@ -125,7 +124,7 @@ public class Filter {
     }
 
     private boolean compareLong(Long actual, Long target, String operator) {
-        if (actual == null) return false;
+        if (actual == null || target == null) return false;
         switch (operator) {
             case "=":
                 return actual.equals(target);
