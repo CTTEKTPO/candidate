@@ -3,7 +3,7 @@ body{
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-
+  height: 650px;
 }
 
 form {
@@ -13,11 +13,11 @@ form {
   opacity: 1;
 }
 
-.email, .pass{
+.login, .pass{
   margin-bottom: 25px;
 }
 
-.email_per {
+.login_per {
   margin-right: 25px;
 }
 
@@ -42,5 +42,9 @@ button{
   height: 350px;
   font-size: 24px;
   margin-left: 25px;
+}
+.notification{
+    font-size: 30px;
+    margin-bottom: 25px;
 }
 

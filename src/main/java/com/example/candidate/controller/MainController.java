@@ -1,6 +1,7 @@
 package com.example.candidate.controller;
 
 import com.example.candidate.service.*;
+import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import com.example.candidate.model.*;
 import org.springframework.stereotype.Controller;
@@ -33,16 +34,21 @@ public class MainController {
         this.userService = userService;
     }
 
-        @GetMapping("/")
-        public String getAllPersonalCards(Model model) {
-            List<PersonalCard> personalCards = personalCardService.getAll();
-            model.addAttribute("personalCards", personalCards);
-            return "job_seekers";
-        }
+    @GetMapping("/")
+    public String getAllPersonalCards(Model model) {
+        List<PersonalCard> personalCards = personalCardService.getAll();
+        model.addAttribute("personalCards", personalCards);
+        return "job_seekers";
+    }
     @GetMapping("/login")
     public String login() {
         return "login";
     }
+//    @PostMapping("/login")
+//    public String returnMainPage(){
+//        return "job_seekers";
+//    }
+
     @GetMapping("/filteredPersonalCards")
     public String getFilteredPersonalCards(
             @RequestParam Map<String, String> params,
@@ -131,22 +137,29 @@ public class MainController {
     }
 
     @GetMapping("/admin_panel")
-    public String getAdminPanel(Model model) {
+    public String getAdminPanel(Model model, Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            String authority = authentication.getAuthorities().iterator().next().getAuthority();
 
+            // Проверяем, имеет ли пользователь роль 'full'
+            if ("full".equals(authority)) {
+                List<City> cities = cityService.getAll();
+                List<JobTitle> jobTitles = jobTitleService.getAll();
+                List<Status> statuses = statusService.getAll();
+                List<User> users = userService.getAll();
+                model.addAttribute("city", cities);
+                model.addAttribute("jobTitle", jobTitles);
+                model.addAttribute("status", statuses);
+                model.addAttribute("user", users);
 
-        List<City> cities = cityService.getAll();
-        List<JobTitle> jobTitles = jobTitleService.getAll();
-        List<Status> statuses = statusService.getAll();
-        List<User> users = userService.getAll();
-        model.addAttribute("city", cities);
-        model.addAttribute("jobTitle", jobTitles);
-        model.addAttribute("status", statuses);
-        model.addAttribute("user", users);
+                return "admin_panel";
+            }
+        }
 
-
-        return "admin_panel";
+        // Если у пользователя нет прав, перенаправляем его на главную страницу
+        return "redirect:/";
     }
-    @PostMapping(value = "/save/city", consumes = "multipart/form-data")
+    @PostMapping(value = "/save/city")
     public String addCity(City city){
         cityService.saveOrUpdate(city);
         return "redirect:/admin_panel";

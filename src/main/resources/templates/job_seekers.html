@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.springframework.org/security/tags">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -46,7 +48,13 @@
                     
                 <a class="close-Popup" title="Закрыть" href="#close"></a>
             </div>
+            <div class="logout">
+                <form th:action="@{/logout}" method="post">
+                    <input type="submit" value="Выход"/>
+                </form>
+            </div>
         </div>
+
     </header>
     <main>
 
@@ -76,7 +84,9 @@
 
         <div style="margin-top: 10px; margin-bottom: 10px;">
             <button class="group-btn"><a href="/">Соискатели</a></button>
-<!--            <button th:if="${#request.isUserInRole('full')}" class="group-btn"><a href="/admin_panel">Административная панель</a></button>-->
+            <sec:authorize access="hasAuthority('full')">
+                <button class="group-btn"><a href="/admin_panel">Административная панель</a></button>
+            </sec:authorize>
         </div>
 
         <p class="filt-desc" style="margin-bottom: 10px;">Фильтры</p>

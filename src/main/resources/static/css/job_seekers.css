@@ -10,6 +10,7 @@ body{
     background-color: rgba(217, 217, 217, 1);
     padding: 10px;
     margin-bottom: 11px;
+    justify-content: space-between;
 }
 
 
@@ -170,4 +171,6 @@ th, td {
     max-height: 200px;
     overflow-y: auto;
     margin-bottom: 10px;
+}
+.logout{
 }
