@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Медиана по зарплатным ожиданиям</title>
+    <link rel="stylesheet" th:href="@{css/job_seekers.css}">
+    <link rel="stylesheet" th:href="@{css/style-modal.css}">
+    <link rel="stylesheet" th:href="@{css/delete.css}">
+    <link rel="stylesheet" th:href="@{css/median.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-flex">
+            <!-- <a href="">Файл</a> -->
+            <div id="openModal" class="modal">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <a href="#win2" class="modal-title"><h3 style="width: 140px;">О программе</h3></a>
+                      <a href="#close" title="Close" class="close">×</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+               
+              <!-- HTML кнопки -->
+               
+            <a href="#openModal" class="reference">Справка</a>
+
+            <a href="#x" class="overlay" id="win2"></a>
+            <div class="popup">
+                <div class="flex-popup">
+                    <img src="img/person.svg" width="130px" class="img-popup">
+                    <div class="person-desc">
+                        <p>RecruitRight</p>
+                        <p>@Megasoft</p>
+                        <p>Хромченков А.П. все права защищены</p>
+                        <p>Email для связи c разработчиком:</p>
+                        <p>cttektpo98@gmail.com</p>
+                    </div>
+
+                </div>
+    
+                    
+                <a class="close-Popup" title="Закрыть" href="#close"></a>
+            </div>
+        </div>
+    </header>
+
+    <div class="group-img">
+        <!-- <a href="addendum.html"><img src="img/newdoc.svg" class="img"></a> -->
+        <!-- <a href="editing.html"><img src="img/edit.svg" class="img"></a> -->
+        <!-- <a href="delete.html"><img src="img/delete.svg" class="img"></a> -->
+        <a href="/median"><img src="img/chart.svg " class="img"></a>
+    </div>
+    <div>
+        <button class="group-btn"><a href="/">Соискатели</a></button>
+        <!-- <button class="group-btn"><a href="job_openings.html">Вакансии</a></button> -->
+    </div>
+    <form class="form-add" enctype="multipart/form-data" th:object="${personalCard}">
+    <div class="flex-median">
+        <div>
+        <label><b>Должность</b></label>
+        <select id="jobTitle" name="jobTitle"  class="flex-median-select" style="font-size: 20px;">
+            <option value="" style="color: grey;" selected hidden>Выберите должность</option>
+            <option th:each="jobTitle : ${jobTitles}" th:value="${jobTitle.id}" th:text="${jobTitle.title}"></option>
+        </select>
+        </div>
+        <div class="date">
+            <label>Выберите период от</label>
+            <input id="dateBefore" type="date" name="date" required >
+        </div>
+        <div class="date">
+            <label>Выберите период до</label>
+            <input id="dateAfter" type="date" name="date" required >
+        </div>
+    </div>
+
+        <div>
+        <canvas id="medianChart" style="max-width: 1100px; max-height: 550px;"></canvas>
+        </div>
+        <button type="button" class="add" style="margin-left: 30px;" id="medianButton">Построить график</button>
+    </form>
+
+</body>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        var jobTitles = /*[[${jobTitles}]]*/[];
+        var personalCards = /*[[${personalCards}]]*/[];
+<!--        console.log("Job Titles in JS: ", jobTitles);-->
+<!--        console.log("Personal Cards in JS: ", personalCards);-->
+
+        document.getElementById('medianButton').addEventListener('click', function () {
+        var notFilledFields = getNotFilledFields();
+        if (notFilledFields.length === 0) {
+            buildMedianChart(jobTitles, personalCards);
+        } else {
+            alert('Пожалуйста, заполните все поля перед построением графика. Не заполнено: ' + notFilledFields.join(', '));
+        }
+    });
+
+        function buildMedianChart(jobTitles, personalCards) {
+            var selectedJobTitleId = document.getElementById('jobTitle').value;
+            var dateBefore = document.getElementById('dateBefore').value;
+            var dateAfter = document.getElementById('dateAfter').value;
+
+<!--            console.log("dateBefore: ", dateBefore, " dateAfter: ",dateAfter );-->
+<!--            console.log("Job Titles: ", jobTitles);-->
+<!--            console.log("Personal Cards: ", personalCards);-->
+            // Фильтрация карточек по выбранной должности и периоду
+            var filteredCards = personalCards.filter(function(card) {
+                return card.jobTitle && card.jobTitle.id == selectedJobTitleId &&
+                   card.creationDate >= dateBefore &&
+                   card.creationDate <= dateAfter;
+            });
+            //console.log("Filtered Cards: ", filteredCards);
+
+            if(filteredCards.length != 0){
+                var groupedData = {};
+                filteredCards.forEach(function (card) {
+                    if (!groupedData[card.salary]) {
+                        groupedData[card.salary] = 0;
+                    }
+                    groupedData[card.salary]++;
+                });
+
+            // Построение графика
+            var ctx = document.getElementById('medianChart').getContext('2d');
+            // Проверка, существует ли уже график
+            if (window.chart instanceof Chart) {
+                // Уничтожение предыдущего графика
+                window.chart.destroy();
+            }
+            window.chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(groupedData),
+                    datasets: [{
+                        label: 'Медиана по зарплатным ожиданиям',
+                        data: Object.keys(groupedData).map(function (salary) {
+                            return { x: Number(salary), y: groupedData[salary] };
+                    }),
+                        backgroundColor: 'rgba(229, 248, 238, 0.8)',
+                        borderColor: '#469C6E',
+                        borderWidth: 4
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Количество совпадений'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Зарплата'
+                            }
+                        }
+                    }
+                }
+            });
+        }else alert('Отсутствуют данные для отображения графика');
+    }
+});
+function getNotFilledFields() {
+        var selectedJobTitleId = document.getElementById('jobTitle').value;
+        var dateBefore = document.getElementById('dateBefore').value;
+        var dateAfter = document.getElementById('dateAfter').value;
+
+        var notFilledFields = [];
+
+        // Проверяем, выбраны ли все поля
+        if (selectedJobTitleId === '') {
+            notFilledFields.push('Должность');
+        }
+        if (dateBefore === '') {
+            notFilledFields.push('Период от');
+        }
+        if (dateAfter === '') {
+            notFilledFields.push('Период до');
+        }
+
+        // Возвращаем массив с именами не заполненных полей
+        return notFilledFields;
+}
+</script>
+</html>

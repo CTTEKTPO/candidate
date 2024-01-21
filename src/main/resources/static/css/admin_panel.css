@@ -1,0 +1,378 @@
+body{
+    background-image: url(../img/background.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+}
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.header-flex{
+    display: flex;
+    background-color: rgba(217, 217, 217, 1);
+    padding: 10px;
+    margin-bottom: 11px;
+}
+
+
+
+/* Стили всплывающего окна по-умолчанию */
+.modal {
+    position: fixed; /* фиксированное положение */
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1050;
+    opacity: 0; /* по умолчанию модальное окно прозрачно */
+    transition: opacity 200ms ease-in; /* анимация перехода */
+    pointer-events: none; /* элемент невидим для событий мыши */
+    margin: 0;
+    padding: 0;
+    margin-top: 47px;
+}
+/* При отображении модального окно */
+.modal:target {
+    opacity: 1; /* делаем окно видимым */
+	pointer-events: auto; /* элемент видим для событий мыши */
+    overflow-y: auto; /* добавляем прокрутку по y, когда элемент не помещается на страницу */
+}
+/* ширина модального окна и его отступы от экрана */
+.modal-dialog {
+    position: relative;
+    width: auto;
+    width: 180px;
+    margin-left: 7px;
+}
+
+/* Стили для блока с контентом окна */ 
+.modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    background-clip: padding-box;
+    border-radius: .3rem;
+    outline: 0;
+    background-color: rgba(86, 100, 114, 1);
+    color: #fff;
+    border: 7px solid rgba(183, 160, 115, 0.51);
+}
+
+
+/* Стили заголовка окна */
+.modal-header {
+    display: flex; 
+    align-items: center;
+    justify-content: space-between;
+    /* padding-left: 10px;
+    border-bottom: 1px solid #eceeef; */
+}
+.modal-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #fff;
+    text-decoration: none;
+}
+/* Стили кнопки "х" ("Закрыть")  */
+.close {
+    float: right;
+    font-family: sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .5;
+    text-decoration: none;
+    margin-top: 1px;
+    padding-right: 15px;
+    margin-left: -15px;
+}
+/* Стили для закрывающей кнопки в фокусе или наведении */
+.close:focus, .close:hover {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    opacity: .75;
+}
+/* Стили блока основного содержимого окна */
+.modal-body {
+  position: relative;
+    flex: 1 1 auto;
+    padding: 15px;
+    overflow: auto;
+}
+
+.reference{
+    color: #000;
+    text-decoration: none;
+    font-size: 20px;
+}
+
+
+.img{
+    margin-right: 10px;
+    margin-left: 5px;
+    width: 25px;
+}
+
+.group-btn{
+    padding: 5px 22px;
+    font-size: 24px;
+    background-color: rgba(217, 217, 217, 1);
+    border: none;
+}
+
+.group-btn a{
+    text-decoration: none;
+    color: black;
+}
+
+
+
+th, td {
+    border: 1px solid #000;
+    padding: 15px;
+    font-weight: 100;
+    font-size: 20px;
+}
+
+.btn-filter{
+    margin-bottom: 15px;
+}
+
+.btn-filter button{
+    font-size: 14px;
+    padding: 5px 15px;
+    background-color: rgba(217, 217, 217, 1);
+    border: none;
+}
+
+.table-container {
+    max-height: 300px; /* Максимальная высота контейнера */
+    overflow-y: auto; /* Включение вертикальной прокрутки, если контейнер превышает максимальную высоту */
+    margin-bottom: 10px;
+    margin-right: 15px;
+    margin-left: 15px;
+}
+.tables{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.table {
+    margin: 10px; /* Расстояние между таблицами */
+    flex: 1; /* Распределение пространства равномерно между таблицами */
+}
+
+@media screen and (max-width: 768px) {
+    .table-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .table {
+        margin: 10px 0; /* Убрать отступы между таблицами на мобильных устройствах */
+    }
+}
+.filt-desc-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+}
+
+.filt-desc {
+    margin-bottom: 5px;
+    font-size: 20px;
+}
+
+.filt-desc img {
+    width: 25px;
+}
+
+
+/* Базовые стили слоя затемнения и модального окна  */
+.overlay {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 9999;
+    visibility: hidden;
+    /* фон затемнения */
+    background-color: rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    position: fixed; /* фиксированное поцизионирование */
+    cursor: default; /* тип курсора */
+}
+.overlay:target {
+    visibility: visible;
+    opacity: 1;
+    transition: all 0.6s;
+}
+
+/* стили модального окна */
+.popup {
+    left: 50%;
+    font-size: 14px;
+    font-family: 'Tahoma', Arial, sans-serif;
+    z-index: 10000;
+    margin: 0 auto;
+    /* фиксированное позиционирование, окно стабильно при прокрутке */
+    position: fixed;
+    padding: 15px;
+    border: 1px solid #383838;
+    /* скругление углов */
+    border-radius: 4px;
+    background-color: #FFFFFF;
+    /* внешняя тень */
+    box-shadow: 0 15px 20px rgba(0,0,0,.22),0 19px 60px rgba(0,0,0,.3);
+    /* трансформация */
+    transform: translate(-50%, -150%);
+    width: 450px;
+
+}
+
+.flex-popup{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.person-desc{
+    text-align: center;
+    font-weight: 400;
+    color: #000;
+    font-size: 16px;
+    line-height: 10px;
+    margin-top: 15px;
+}
+
+/* активируем мод. окно */
+.overlay:target+.popup {
+    top: 50%;
+    transform: translate(-50%, -50%);
+/* анимируем трансформацию */
+    transition: transform 0.6s ease-out;
+}
+/* формируем кнопку закрытия */
+.close-Popup{
+    position: absolute;
+    padding: 0;
+    top: -10px;
+    right: -10px;
+    width: 22px;
+    height: 22px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    background-color: rgba(61, 61, 61, 0.8);
+    box-shadow: 0px 0px 10px #000;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    line-height: 20px;
+    transition: all ease .8s;
+}
+.close-Popup:before {
+    color: rgba(255, 255, 255, 0.9);
+    content: '\2715';
+    text-shadow: 0 -1px rgba(0, 0, 0, 0.9);
+    font-size: 12px;
+}
+
+.close-Popup:hover {
+    background-color: rgba(252, 20, 0, 0.8);
+    transform: rotate(360deg);
+}
+
+.popup p {
+    margin: 0;
+    padding: 10px;
+}
+
+
+
+
+/*Модальное окно для таблиц */
+.modal-tables {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(51, 122, 183, 0.7);
+
+  }
+
+  .modal-content-tables{
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: Verdana, sans-serif;
+      font-size: 16px;
+      padding: 20px;
+      width: 80%;
+      max-width: 600px;
+      max-height: 70%;
+      transition: 0.5s;
+      border: 6px solid #BFE2FF;
+      border-radius: 12px;
+      background: #FFF;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2), 0 16px 20px rgba(0,0,0,0.2);
+      text-align: center;
+      overflow: auto;
+  }
+
+  .modal-close-tables {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .confirm-button-yes {
+      padding: 5px 50px;
+      background-color: #52D94F;
+      border: none;
+      font-size: 20px;
+      margin-top: 35px;
+      margin-right: 50px;
+  }
+
+  .confirm-button-yes:hover{
+      background-color: #358733;
+  }
+
+  .confirm-button-no{
+      padding: 5px 50px;
+      background-color: rgba(255, 0, 0, 0.65);
+      border: none;
+      font-size: 20px;
+  }
+
+  .confirm-button-no:hover{
+      background-color: rgba(197,24,24,7);
+  }
+
+  .confirm-button:hover {
+    background-color: #45a049;
+  }
+
+  .user_form{
+    margin-bottom: 20px;
+    text-align: left;
+    margin-left: 100px;
+  }
+  .user_field{
+    width: 200px;
+  }
