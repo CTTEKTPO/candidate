@@ -1,11 +1,17 @@
 package com.example.candidate.controller;
 
 import com.example.candidate.service.*;
+import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import com.example.candidate.model.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,7 +25,6 @@ public class MainController {
     private final JobTitleService jobTitleService;
     private final StatusService statusService;
     private final UserService userService;
-
 
 
     public MainController(
@@ -36,25 +41,47 @@ public class MainController {
 
     @GetMapping("/")
     public String getAllPersonalCards(Model model) {
-        List<PersonalCard> personalCards = personalCardService.getAll();
-        model.addAttribute("personalCards", personalCards);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        Optional<? extends GrantedAuthority> first = userDetails.getAuthorities().stream().findFirst();
+        if (first.isPresent()) {
+            if (first.get().getAuthority().equals("ROLE_full")) {
+                model.addAttribute("show_admin", true);
+            }
+            else {
+                model.addAttribute("show_admin", false);
+            }
+        }
+
+//        List<PersonalCard> personalCards = personalCardService.getAll();
+//        model.addAttribute("personalCards", personalCards);
+        List<PersonalCard> sortedPersonalCards = personalCardService.getAll().stream()
+                .sorted(Comparator.comparing(PersonalCard::getId))
+                .collect(Collectors.toList());
+        model.addAttribute("personalCards", sortedPersonalCards);
         return "job_seekers";
     }
+
+    @ExceptionHandler(ConfigDataResourceNotFoundException.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public String handleResourceNotFoundException() {
+        return "404";
+    }
+
+
     @GetMapping("/login")
     public String login() {
         return "login";
     }
-//    @PostMapping("/login")
-//    public String returnMainPage(){
-//        return "job_seekers";
-//    }
 
     @GetMapping("/filteredPersonalCards")
     public String getFilteredPersonalCards(
             @RequestParam Map<String, String> params,
             Model model) {
 
-        List<PersonalCard> personalCards = personalCardService.getAll();
+        List<PersonalCard> personalCards = personalCardService.getAll().stream()
+                .sorted(Comparator.comparing(PersonalCard::getId))
+                .collect(Collectors.toList());
         // Если параметры отсутствуют, вернуть весь список
         if (params.isEmpty()) {
             model.addAttribute("personalCards", personalCards);
@@ -73,6 +100,9 @@ public class MainController {
 
         List<PersonalCard> filteredPersonalCards = filter.filter(new ArrayList<>(uniquePersonalCards), NewParams);
 
+        filteredPersonalCards = filteredPersonalCards.stream()
+                .sorted(Comparator.comparing(PersonalCard::getId))
+                .collect(Collectors.toList());
 
         model.addAttribute("personalCards", filteredPersonalCards);
         return "job_seekers";
@@ -137,27 +167,29 @@ public class MainController {
     }
 
     @GetMapping("/admin_panel")
-    public String getAdminPanel(Model model, Authentication authentication) {
-        if (authentication != null && authentication.isAuthenticated()) {
-            String authority = authentication.getAuthorities().iterator().next().getAuthority();
+    public String getAdminPanel(Model model) {
+        List<City> cities = cityService.getAll().stream()
+                .sorted(Comparator.comparing(City::getId))
+                .collect(Collectors.toList());
 
-            // Проверяем, имеет ли пользователь роль 'full'
-            if ("full".equals(authority)) {
-                List<City> cities = cityService.getAll();
-                List<JobTitle> jobTitles = jobTitleService.getAll();
-                List<Status> statuses = statusService.getAll();
-                List<User> users = userService.getAll();
-                model.addAttribute("city", cities);
-                model.addAttribute("jobTitle", jobTitles);
-                model.addAttribute("status", statuses);
-                model.addAttribute("user", users);
+        List<JobTitle> jobTitles = jobTitleService.getAll().stream()
+                .sorted(Comparator.comparing(JobTitle::getId))
+                .collect(Collectors.toList());
 
-                return "admin_panel";
-            }
-        }
+        List<Status> statuses = statusService.getAll().stream()
+                .sorted(Comparator.comparing(Status::getId))
+                .collect(Collectors.toList());
 
-        // Если у пользователя нет прав, перенаправляем его на главную страницу
-        return "redirect:/";
+        List<User> users = userService.getAll().stream()
+                .sorted(Comparator.comparing(User::getId))
+                .collect(Collectors.toList());
+
+        model.addAttribute("city", cities);
+        model.addAttribute("jobTitle", jobTitles);
+        model.addAttribute("status", statuses);
+        model.addAttribute("user", users);
+
+        return "admin_panel";
     }
     @PostMapping(value = "/save/city")
     public String addCity(City city){
@@ -175,8 +207,14 @@ public class MainController {
         return "redirect:/admin_panel";
     }
     @PostMapping("/save/user")
-    public String addUser(User user){
-        userService.saveOrUpdate(user);
+    public String addUser(User user, @RequestParam String old_authority) {
+        userService.saveOrUpdate(user, old_authority != null && !user.getAuthority().equals(old_authority));
+        return "redirect:/admin_panel";
+    }
+    @PostMapping("/save/user/activated")
+    public String activatedUser(User user, RedirectAttributes redirectAttributes) {
+        if(!userService.activatedUser(user))
+            redirectAttributes.addFlashAttribute("errorMessage", "Нельзя отключить единственного пользователя с полными правами.");
         return "redirect:/admin_panel";
     }
 
@@ -196,8 +234,12 @@ public class MainController {
         return "redirect:/admin_panel";
     }
     @GetMapping("/delete/user/{id}")
-    public String deleteUser(@PathVariable("id") Long id) {
-        userService.deleteById(id);
+    public String deleteUser(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        if (userService.deleteById(id)) {
+            redirectAttributes.addFlashAttribute("successMessage", "Пользователь успешно удален");
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "Нельзя удалить единственного пользователя с полными правами.");
+        }
         return "redirect:/admin_panel";
     }
 

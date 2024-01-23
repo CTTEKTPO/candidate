@@ -36,7 +36,7 @@ public class StatusService {
             if (optionalStatus.isPresent()) {
                 Status existingStatus = optionalStatus.get();
                 existingStatus.setField(status.getField());
-                repo.save(status);
+                repo.save(existingStatus);
             }
         }
     }

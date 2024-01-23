@@ -6,7 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Candidates.RecruitRight</title>
-    <link href="css/admin_panel.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin_panel.css}">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 </head>
 <body>
     <header>
@@ -85,8 +87,8 @@
                 <div class="user_form">
                     <label id="accessUserLabel"></label>
                     <select id="modalInputAccessUser" style="font-size: 15px;" class="user_field" >
-                        <option id="limited" value="Ограниченный">Ограниченный</option>
-                        <option id="full" value="Полный">Полный</option>
+                        <option id="limited" value="limited">Ограниченный</option>
+                        <option id="full" value="full">Полный</option>
                     </select>
                 </div>
                 <div class="user_form">
@@ -177,8 +179,15 @@
                 </tbody>
             </table>
             </div>
-            
+
             <div class="table-container">
+                <div th:if="${successMessage}" class="alert alert-success">
+                    <p th:text="${successMessage}"></p>
+                </div>
+
+                <div th:if="${errorMessage}" class="alert alert-danger">
+                    <p th:text="${errorMessage}"></p>
+                </div>
                 <div class="filt-desc-container">
                     <p class="filt-desc">Пользователи</p>
                     <a onclick="openAddUser()" ><img src="img/add.svg" class="img"></a>
@@ -197,12 +206,12 @@
                     <td th:text="${user.id}"></td>
                     <td th:text="${user.username}"></td>
                     <td style="text-align: center;">
-                        <input id="user_activated" type="checkbox" style="width: 15px; height: 15px;">
+                        <input  th:checked="${user.enabled}" th:attr="onchange=|changeActivity(this, '${user.id}')|" type="checkbox" style="width: 15px; height: 15px;">
                     </td>
                     <td th:text="${user.authority}"></td>
                     <td th:text="${user.employeeName}"></td>
                     <td>
-                        <a th:attr="onclick=|openEditUser('${user.id}', '${user.username}', '${user.authority}', '${user.employeeName}')|">Edit</a>
+                        <a th:attr="onclick=|openEditUser('${user.id}', '${user.username}', '${user.authority}', '${user.employeeName}', '${user.enabled}')|">Edit</a>
                         <a th:attr="onclick=|openDeleteUniversalModal('пользователя ' + '${user.username}', 'user', '${user.id}')|">Delete</a>
                     </td>
                 </tr>

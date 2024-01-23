@@ -1,5 +1,7 @@
 package com.example.candidate.config;
 
+import com.example.candidate.Component.LoginFailureHandler;
+import com.example.candidate.Component.LoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,11 +9,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 import javax.sql.DataSource;
@@ -20,13 +19,16 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final DataSource dataSource;
+    private final LoginSuccessHandler loginSuccessHandler;
+    private final LoginFailureHandler loginFailureHandler;
     @Autowired
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
 
-    public SecurityConfig(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public SecurityConfig(DataSource dataSource, LoginSuccessHandler loginSuccessHandler, LoginFailureHandler loginFailureHandler, UserDetailsService userDetailsService) {
+        this.loginSuccessHandler = loginSuccessHandler;
+        this.loginFailureHandler = loginFailureHandler;
+        this.userDetailsService = userDetailsService;
     }
 
 
@@ -38,13 +40,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests((requests) -> requests
-                        .requestMatchers("/css/login.css", "/img/background.jpg").permitAll()
-                        .requestMatchers("/admin_panel").hasAuthority("full")
+                        .requestMatchers("/css/login.css", "/img/background.jpg", "/login").permitAll()
+                        .requestMatchers("/admin_panel").hasRole("full")
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/",true)
+                        .successHandler(loginSuccessHandler)
+                        .failureHandler(loginFailureHandler)
                         .permitAll()
                 )
                 .logout(LogoutConfigurer::permitAll);

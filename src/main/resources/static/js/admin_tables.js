@@ -64,10 +64,17 @@ async function addElement(value, itemId, entity) {
         // id, field
         data.append('field', value)
     }
-    //window.location.href = '/save/' + entity;
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
     await fetch('/save/' + entity, {
         body: data,
         method: "post",
+        headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    [csrfHeader]: csrfToken,
+        },
     })
 
     window.location.reload()
@@ -95,10 +102,16 @@ async function editElement(value, itemId, entity) {
         data.append('field', value)
     }
 
-    //window.location.href = '/save/' + entity;
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
     await fetch('/save/' + entity, {
         body: data,
         method: "post",
+        headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    [csrfHeader]: csrfToken,
+        },
     })
 
     window.location.reload()
@@ -143,11 +156,18 @@ function openAddUser(){
         data.append('password', passwordInput.value)
         data.append('authority', accessInput.value)
         data.append('employeeName', nameInput.value)
+        data.append('enabled',true)
 
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
         await fetch('/save/user', {
             body: data,
             method: "post",
+            headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        [csrfHeader]: csrfToken,
+            },
         })
 
         window.location.reload()
@@ -156,7 +176,7 @@ function openAddUser(){
     };
 }
 
-function openEditUser(id, login, access, name){
+function openEditUser(id, login, access, name, enabled){
     const loginInput = document.getElementById("modalInputLoginUser")
     const passwordInput = document.getElementById("modalInputPasswordUser")
     const accessInput = document.getElementById("modalInputAccessUser")
@@ -179,10 +199,19 @@ function openEditUser(id, login, access, name){
         data.append('password', passwordInput.value)
         data.append('authority', accessInput.value)
         data.append('employeeName', nameInput.value)
+        data.append('enabled', enabled)
+        data.append('old_authority',access)
+
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
         await fetch('/save/user', {
             body: data,
             method: "post",
+            headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        [csrfHeader]: csrfToken,
+            },
         })
 
         window.location.reload()
@@ -190,4 +219,24 @@ function openEditUser(id, login, access, name){
     };
 
     document.getElementById('universalModalUsers').style.display = 'block';
+}
+
+function changeActivity(checkbox, id){
+    const data = new FormData()
+    data.append('id', id)
+    data.append('enabled', !!checkbox.checked)
+    // data.append('username', 'Privet')
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+    fetch('/save/user/activated', {
+         body: data,
+         method: "post",
+         headers: {
+                 'X-CSRF-TOKEN': csrfToken,
+                 [csrfHeader]: csrfToken,
+         },
+    })
+    //window.location.reload()
 }

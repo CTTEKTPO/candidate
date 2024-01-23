@@ -35,7 +35,7 @@ public class CityService {
             if (optionalCity.isPresent()) {
                 City existingCity = optionalCity.get();
                 existingCity.setName(city.getName());
-                repo.save(city);
+                repo.save(existingCity);
             }
         }
     }

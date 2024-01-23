@@ -84,9 +84,7 @@
 
         <div style="margin-top: 10px; margin-bottom: 10px;">
             <button class="group-btn"><a href="/">Соискатели</a></button>
-            <sec:authorize access="hasAuthority('full')">
-                <button class="group-btn"><a href="/admin_panel">Административная панель</a></button>
-            </sec:authorize>
+            <button th:if="${show_admin}" class="group-btn"><a href="/admin_panel">Административная панель</a></button>
         </div>
 
         <p class="filt-desc" style="margin-bottom: 10px;">Фильтры</p>

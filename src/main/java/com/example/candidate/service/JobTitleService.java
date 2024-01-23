@@ -35,7 +35,7 @@ public class JobTitleService {
             if (optionalJobTitle.isPresent()) {
                 JobTitle existingJobTitle = optionalJobTitle.get();
                 existingJobTitle.setTitle(jobTitle.getTitle());
-                repo.save(jobTitle);
+                repo.save(existingJobTitle);
             }
         }
     }

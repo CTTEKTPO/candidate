@@ -52,7 +52,7 @@ public class PersonalCardService {
                 existingPersonalCard.setJobTitle(personalCard.getJobTitle());
                 existingPersonalCard.setStatus(personalCard.getStatus());
                 existingPersonalCard.setCreationDate(existingPersonalCard.getCreationDate());
-                repo.save(personalCard);
+                repo.save(existingPersonalCard);
             }
         }
     }

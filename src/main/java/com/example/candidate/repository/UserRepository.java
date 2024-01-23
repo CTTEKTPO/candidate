@@ -13,4 +13,5 @@ public interface UserRepository extends JpaRepository<User, Long>{
     @Query("SELECT COUNT(u) FROM User u WHERE u.username = :username")
     long countByUsername(@Param("username") String username);
 
+    long countUsersByAuthority(String authority);
 }
