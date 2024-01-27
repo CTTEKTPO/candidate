@@ -62,11 +62,11 @@ public class MainController {
         return "job_seekers";
     }
 
-    @ExceptionHandler(ConfigDataResourceNotFoundException.class)
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public String handleResourceNotFoundException() {
-        return "404";
-    }
+//    @ExceptionHandler(ConfigDataResourceNotFoundException.class)
+//    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+//    public String handleResourceNotFoundException() {
+//        return "404";
+//    }
 
 
     @GetMapping("/login")

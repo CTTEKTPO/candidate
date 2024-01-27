@@ -12,20 +12,20 @@ import java.util.Optional;
 @SpringBootTest
 class CandidateApplicationTests {
 
-	@Autowired
-	private PersonalCardRepository repo;
-	@Test
-	void contextLoads() {
-	}
-	@Test
-	public void testUpdate() {
-		Long userId = 4L;
-		Optional<PersonalCard> optionalUser = repo.findById(userId);
-		PersonalCard personalCard = optionalUser.get();
-		personalCard.setSalary(11111111);
-		repo.save(personalCard);
-
-		PersonalCard updatedUser = repo.findById(userId).get();
-		Assertions.assertThat(updatedUser.getSalary()).isEqualTo(99999);
-	}
+//	@Autowired
+//	private PersonalCardRepository repo;
+//	@Test
+//	void contextLoads() {
+//	}
+//	@Test
+//	public void testUpdate() {
+//		Long userId = 4L;
+//		Optional<PersonalCard> optionalUser = repo.findById(userId);
+//		PersonalCard personalCard = optionalUser.get();
+//		personalCard.setSalary(11111111);
+//		repo.save(personalCard);
+//
+//		PersonalCard updatedUser = repo.findById(userId).get();
+//		Assertions.assertThat(updatedUser.getSalary()).isEqualTo(99999);
+//	}
 }

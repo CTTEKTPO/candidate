@@ -25,7 +25,7 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
 
 
-    public SecurityConfig(DataSource dataSource, LoginSuccessHandler loginSuccessHandler, LoginFailureHandler loginFailureHandler, UserDetailsService userDetailsService) {
+    public SecurityConfig(LoginSuccessHandler loginSuccessHandler, LoginFailureHandler loginFailureHandler, UserDetailsService userDetailsService) {
         this.loginSuccessHandler = loginSuccessHandler;
         this.loginFailureHandler = loginFailureHandler;
         this.userDetailsService = userDetailsService;
