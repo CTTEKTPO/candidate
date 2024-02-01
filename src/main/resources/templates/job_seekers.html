@@ -130,14 +130,15 @@
                 <th>Ключевые навыки</th>
                 <th>Комментарии</th>
                 <th>Статус</th>
+                <th>Дата добавления в базу</th>
             </tr>
             <tbody id="tableBody">
             <tr th:each="personalCard : ${personalCards}">
                 <th><input type="radio" name="selectedCandidate" th:value="${personalCard.id}" ></th>
                 <td th:text="${personalCard?.id}?: ''"></td>
                 <td th:text="${personalCard?.fullName}?: ''"></td>
-                <td th:text="${#dates.format(personalCard?.dateOfBirth,'dd.MM.yyyy')}?: ''"></td>
-                <td th:text="${personalCard?.age}?: ''"></td>
+                <td th:text="${#temporals.format(personalCard?.dateOfBirth,'dd.MM.yyyy')}?: ''"></td>
+                <td th:text="${personalCard?.getAge()}?: ''"></td>
                 <td th:text="${personalCard?.sex}?: ''"></td>
                 <td th:text="${personalCard.city?.name}?: ''"></td>
                 <td th:text="${personalCard?.phone}?: ''"></td>
@@ -148,6 +149,7 @@
                 <td th:text="${personalCard?.skills}?: ''"></td>
                 <td th:text="${personalCard?.comments} ?: ''"></td>
                 <td th:text="${personalCard.status?.field} ?: ''"></td>
+                <td th:text="${#temporals.format(personalCard?.creationDate,'dd.MM.yyyy')}?: ''"></td>
             </tr>
             </tbody>
         </table>

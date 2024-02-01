@@ -1,4 +1,4 @@
-package com.example.candidate.Component;
+package com.example.candidate.component;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

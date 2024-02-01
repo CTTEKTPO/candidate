@@ -1,8 +1,10 @@
 package com.example.candidate.model;
 
 import java.lang.reflect.Field;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -24,8 +26,8 @@ public class Filter {
             predicates.add(createPredicate(key, value, operator));
         }
 
-        // Объединяем предикаты с помощью логического ИЛИ
-        Predicate<PersonalCard> combinedPredicate = predicates.stream().reduce(x -> false, Predicate::or);
+        // Объединяем предикаты с помощью логического И
+        Predicate<PersonalCard> combinedPredicate = predicates.stream().reduce(x -> true, Predicate::and);
 
         // Применяем фильтр
         return personalCards.stream().filter(combinedPredicate).collect(Collectors.toList());
@@ -45,16 +47,22 @@ public class Filter {
     }
     private boolean compareField(PersonalCard card, Field field, String value, String operator) {
         try {
-            Object fieldValue = field.get(card);
-            if(fieldValue!= null) {
-                if (field.getType() == String.class) {
+            Object fieldValue;
+            if ("age".equals(field.getName())) {
+                // Если поле "age", вычисляем возраст
+                fieldValue = card.getAge();
+            } else {
+                fieldValue = field.get(card);
+            }
+            if (fieldValue != null) {
+                if ("age".equals(field.getName())) {
+                    return compareAge((Integer) fieldValue, Integer.parseInt(value), operator);
+                }else if (field.getType() == String.class) {
                     return compareString((String) fieldValue, value, operator);
-                } else if (field.getType() == Integer.class) {
-                    return compareInteger((Integer) fieldValue, Integer.parseInt(value), operator);
-                } else if (field.getType() == Date.class) {
-                    return compareDate((Date) fieldValue, value, operator);
-                } else if (field.getType() == Long.class) {
-                    return compareLong((Long) fieldValue, Long.parseLong(value), operator);
+                } else if (field.getType() == Integer.class || field.getType() == Long.class) {
+                    return compareNumber((Number) fieldValue, Long.parseLong(value), operator);
+                } else if (field.getType() == LocalDate.class) {
+                    return compareDate(fieldValue, value, operator);
                 } else if (field.getType() == JobTitle.class) {
                     return compareString(((JobTitle) fieldValue).getTitle(), value, operator);
                 } else if (field.getType() == City.class) {
@@ -71,71 +79,91 @@ public class Filter {
         return false;
     }
 
+    private boolean compareAge(Integer actualAge, Integer targetAge, String operator) {
+        if (actualAge == null || targetAge == null) {
+            return false;
+        }
+        return switch (operator) {
+            case "=" -> actualAge.equals(targetAge);
+            case "<" -> actualAge < targetAge;
+            case ">" -> actualAge > targetAge;
+            default -> false;
+        };
+    }
+
     private boolean compareString(String actual, String target, String operator) {
         if (actual == null || target == null) return false;
         actual = actual.toLowerCase();
         target = target.toLowerCase();
-        switch (operator) {
-            case "=":
-                return actual.equals(target);
-            case "*":
-                return actual.contains(target);
-            default:
-                return false;
-        }
+        return switch (operator) {
+            case "=" -> actual.equals(target);
+            case "*" -> actual.contains(target);
+            default -> false;
+        };
     }
 
-    private boolean compareInteger(Integer actual, Integer target, String operator) {
+    private boolean compareNumber(Number actual, Number target, String operator) {
         if (actual == null || target == null) return false;
-        switch (operator) {
-            case "=":
-                return actual.equals(target);
-            case "<":
-                return actual < target;
-            case ">":
-                return actual > target;
-            default:
-                return false;
-        }
+        return switch (operator) {
+            case "=" -> actual.equals(target);
+            case "<" -> actual.longValue() < target.longValue();
+            case ">" -> actual.longValue() > target.longValue();
+            default -> false;
+        };
     }
 
-    private boolean compareDate(Date actual, String target, String operator) {
+    /*
+    Этот метод теперь поддерживает ввод пользователей
+    в различных форматах для дат, таких как "год", "месяц год" и "день месяц год".
+    */
+    private boolean compareDate(Object actual, Object target, String operator) {
         if (actual == null || target == null) return false;
-        try {
-            SimpleDateFormat sdfUserInput = new SimpleDateFormat("dd.MM.yyyy");
-            Date targetDate = sdfUserInput.parse(target);
-            int comparison = actual.compareTo(targetDate);
 
-            switch (operator) {
-                case "=":
-                    return comparison == 0;
-                case "<":
-                    return comparison < 0;
-                case ">":
-                    return comparison > 0;
-                default:
+        LocalDate actualDate = null;
+        LocalDate targetDate = null;
+
+        if (actual instanceof LocalDate) {
+            actualDate = (LocalDate) actual;
+        } else if (actual instanceof Date) {
+            actualDate = ((Date) actual).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        }
+
+        if (target instanceof LocalDate) {
+            targetDate = (LocalDate) target;
+        } else if (target instanceof Date) {
+            targetDate = ((Date) target).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        } else if (target instanceof String targetString) {
+            try {
+                if (targetString.length() == 4) {
+                    targetDate = LocalDate.of(Integer.parseInt(targetString), 1, 1);
+                } else if (targetString.length() == 7) {
+                    String[] parts = targetString.split("\\.");
+                    int year = Integer.parseInt(parts[1]);
+                    int month = Integer.parseInt(parts[0]);
+                    targetDate = LocalDate.of(year, month, 1);
+                } else if (targetString.length() == 10) {
+                    targetDate = LocalDate.parse(targetString, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+                } else {
                     return false;
-            }
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    private boolean compareLong(Long actual, Long target, String operator) {
-        if (actual == null || target == null) return false;
-        switch (operator) {
-            case "=":
-                return actual.equals(target);
-            case "<":
-                return actual < target;
-            case ">":
-                return actual > target;
-            default:
+                }
+            } catch (DateTimeException | NumberFormatException e) {
                 return false;
+            }
         }
+
+        if (actualDate == null || targetDate == null) return false;
+
+        int comparison = actualDate.compareTo(targetDate);
+
+        return switch (operator) {
+            case "=" -> comparison == 0;
+            case "<" -> comparison < 0;
+            case ">" -> comparison > 0;
+            default -> false;
+        };
     }
+
+
 
     private String getOperator(String value) {
         if (value.startsWith("=")) {
@@ -154,7 +182,7 @@ public class Filter {
     private String removeOperator(String value) {
         return value.substring(1);
     }
-    public class FieldMapper {
+    public static class FieldMapper {
         private static final Map<String, String> FIELD_MAPPING = new HashMap<>();
 
         static {

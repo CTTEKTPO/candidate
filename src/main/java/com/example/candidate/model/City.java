@@ -18,7 +18,7 @@ public class City {
     public City() {
     }
 
-    @Column(columnDefinition = "TEXT",name = "city_name")
+    @Column(name = "city_name", length = 64)
     private String name;
 
     public Long getId() {

@@ -3,6 +3,7 @@ package com.example.candidate.repository;
 import com.example.candidate.model.PersonalCard;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -10,8 +11,6 @@ public interface PersonalCardRepository extends JpaRepository<PersonalCard, Long
     List<PersonalCard> findByFullNameContaining(String fullName);
 
     List<PersonalCard> findByDateOfBirth(Date dateOfBirth);
-
-    List<PersonalCard> findByAge(Integer age);
 
     List<PersonalCard> findBySex(String sex);
 
@@ -33,6 +32,6 @@ public interface PersonalCardRepository extends JpaRepository<PersonalCard, Long
 
     List<PersonalCard> findByStatus_Field(String status);
 
-    List<PersonalCard> findByCreationDate(String creationDate);
+    List<PersonalCard> findByCreationDate(LocalDate creationDate);
 
 }

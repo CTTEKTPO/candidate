@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -40,7 +42,6 @@ public class PersonalCardService {
                 PersonalCard existingPersonalCard = optionalPersonalCard.get();
                 existingPersonalCard.setFullName(personalCard.getFullName());
                 existingPersonalCard.setDateOfBirth(personalCard.getDateOfBirth());
-                existingPersonalCard.setAge(personalCard.getAge());
                 existingPersonalCard.setSalary(personalCard.getSalary());
                 existingPersonalCard.setPhone(personalCard.getPhone());
                 existingPersonalCard.setExperience(personalCard.getExperience());
@@ -64,7 +65,9 @@ public class PersonalCardService {
             // needless
         }
         return repo.findById(id).isEmpty();
+
     }
+
 
     public List<PersonalCard> getByJobTitle(String jobTitle) {
         return repo.findByJobTitle_Title(jobTitle);
@@ -77,18 +80,15 @@ public class PersonalCardService {
         return repo.findByFullNameContaining(fullName);
     }
 
-    public List<PersonalCard> getByDateOfBirth(String dateOfBirth) {
-        try {
-            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateOfBirth);
-            return repo.findByDateOfBirth(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return Collections.emptyList();
-        }
-    }
-
-    public List<PersonalCard> getByAge(Integer age) {
-        return repo.findByAge(age);
+    public List<PersonalCard> getByDateOfBirth(Date dateOfBirth) {
+        return repo.findByDateOfBirth(dateOfBirth);
+//        try {
+//            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateOfBirth);
+//
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//            return Collections.emptyList();
+//        }
     }
 
     public List<PersonalCard> getBySex(String sex) {
@@ -123,7 +123,7 @@ public class PersonalCardService {
         return repo.findByStatus_Field(status);
     }
 
-    public List<PersonalCard> getByCreationDate(String creationDate) {
+    public List<PersonalCard> getByCreationDate(LocalDate creationDate) {
         return repo.findByCreationDate(creationDate);
     }
 }

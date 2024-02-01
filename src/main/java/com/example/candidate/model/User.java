@@ -21,15 +21,15 @@ public class User {
     private Long id;
 
     //данные сотрудника
-    @Column(name = "employeeName", columnDefinition = "text")
+    @Column(name = "employeeName", length = 128)
     private String employeeName;
 
     //логин сотрудника
-    @Column(name = "username", columnDefinition = "text", nullable = false)
+    @Column(name = "username", length = 30, nullable = false)
     private String username;
 
     //пароль сотрудника
-    @Column(name = "password", columnDefinition = "text")
+    @Column(name = "password", length = 256)
     private String password;
 
     //возможность входа
@@ -39,6 +39,6 @@ public class User {
     /*доступ сотрудника
     limited - ограниченный
     full - полный*/
-    @Column(name = "authority", columnDefinition = "text")
+    @Column(name = "authority", length = 15)
     private String authority;
 }

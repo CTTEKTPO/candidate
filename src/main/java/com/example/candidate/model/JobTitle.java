@@ -18,7 +18,7 @@ public class JobTitle {
     public JobTitle() {
     }
 
-    @Column(columnDefinition = "TEXT", name = "job_title")
+    @Column(name = "job_title", length = 64)
     private String title;
 
     public Long getId() {

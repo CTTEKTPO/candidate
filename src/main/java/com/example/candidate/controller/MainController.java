@@ -1,8 +1,6 @@
 package com.example.candidate.controller;
 
 import com.example.candidate.service.*;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -53,20 +51,14 @@ public class MainController {
             }
         }
 
-//        List<PersonalCard> personalCards = personalCardService.getAll();
-//        model.addAttribute("personalCards", personalCards);
         List<PersonalCard> sortedPersonalCards = personalCardService.getAll().stream()
                 .sorted(Comparator.comparing(PersonalCard::getId))
                 .collect(Collectors.toList());
+
         model.addAttribute("personalCards", sortedPersonalCards);
         return "job_seekers";
     }
 
-//    @ExceptionHandler(ConfigDataResourceNotFoundException.class)
-//    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-//    public String handleResourceNotFoundException() {
-//        return "404";
-//    }
 
 
     @GetMapping("/login")

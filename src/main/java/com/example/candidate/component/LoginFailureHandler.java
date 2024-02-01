@@ -1,4 +1,4 @@
-package com.example.candidate.Component;
+package com.example.candidate.component;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Iterator;
+
 
 @Component
 @Log4j

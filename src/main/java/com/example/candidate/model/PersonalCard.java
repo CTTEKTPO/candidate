@@ -8,6 +8,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Date;
 
 @Entity
@@ -19,7 +21,7 @@ public class PersonalCard {
     private Long id;
 
     public PersonalCard(Long id, String fullName,
-                        Date dateOfBirth, Integer age,
+                        LocalDate dateOfBirth, Integer age,
                         Integer salary, String phone,
                         String experience, String education,
                         String skills, String comments,
@@ -48,24 +50,24 @@ public class PersonalCard {
     public PersonalCard() {
     }
 
-    @Column(columnDefinition = "TEXT", name = "personal_card_full_name")
+    @Column(name = "personal_card_full_name", length = 128)
     private String fullName;
 
     @Column(columnDefinition = "date", name = "personal_card_DOB")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 
-    @Column(columnDefinition = "Integer", name = "personal_card_age")
+    @Transient
     private Integer age;
 
-    @Column(columnDefinition = "TEXT", name = "personal_card_sex")
+    @Column(name = "personal_card_sex", length = 10)
     private String sex;
 
     @Column(columnDefinition = "Integer", name = "personal_card_salary")
     private Integer salary;
 
-    @Column(columnDefinition = "TEXT",name = "personal_card_phone")
+    @Column(name = "personal_card_phone", length = 20)
     private String phone;
 
     @Column(columnDefinition = "TEXT",name = "personal_card_exp")
@@ -85,9 +87,9 @@ public class PersonalCard {
 //    private byte[] imagesBytes;
 
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "creation_date")
-    private String creationDate;
+//    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "personal_card_creation_date", columnDefinition = "date")
+    private LocalDate creationDate;
 
 
 
@@ -103,15 +105,22 @@ public class PersonalCard {
     @JoinColumn(name = "status_id")
     private Status status;
 
-    public void setCreationDate(String creationDate) {
-        try {
-            if (creationDate != null && !creationDate.isEmpty()) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Date parsedDate = dateFormat.parse(creationDate);
-                this.creationDate = dateFormat.format(parsedDate);
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
+    public Integer getAge() {
+        if (this.dateOfBirth != null) {
+            return Period.between(this.dateOfBirth, LocalDate.now()).getYears();
+        } else {
+            return null; // или любое другое значение по умолчанию
         }
     }
+//    public void setCreationDate(String creationDate) {
+//        try {
+//            if (creationDate != null && !creationDate.isEmpty()) {
+//                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//                Date parsedDate = dateFormat.parse(creationDate);
+//                this.creationDate = dateFormat.format(parsedDate);
+//            }
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

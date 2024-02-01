@@ -1,7 +1,7 @@
 package com.example.candidate.config;
 
-import com.example.candidate.Component.LoginFailureHandler;
-import com.example.candidate.Component.LoginSuccessHandler;
+import com.example.candidate.component.LoginFailureHandler;
+import com.example.candidate.component.LoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +12,6 @@ import org.springframework.security.config.annotation.web.configurers.LogoutConf
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity

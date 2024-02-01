@@ -17,7 +17,7 @@ public class Status {
     public Status() {
     }
 
-    @Column(columnDefinition = "TEXT", name = "status_field")
+    @Column(name = "status_field" , length = 64)
     private String field;
 
     public Long getId() {

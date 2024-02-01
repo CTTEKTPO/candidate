@@ -1,4 +1,4 @@
-package com.example.candidate.Component;
+package com.example.candidate.component;
 
 import com.example.candidate.model.User;
 import com.example.candidate.repository.UserRepository;
